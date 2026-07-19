@@ -2,6 +2,7 @@ import os
 from langchain_openrouter import ChatOpenRouter
 from common.llm.config import LLMConfig
 
+
 def get_llm(config: LLMConfig):
     OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 

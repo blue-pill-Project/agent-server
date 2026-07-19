@@ -8,18 +8,13 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 if not DATABASE_URL:
-    raise RuntimeError(
-        "DATABASE_URL environment variable is not set"
-    )
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
 
 @contextmanager
 def get_connection():
 
-    conn = psycopg.connect(
-        DATABASE_URL,
-        row_factory=dict_row
-    )
+    conn = psycopg.connect(DATABASE_URL, row_factory=dict_row)
 
     try:
         yield conn

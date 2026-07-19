@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from agents.trend_agent.state import GraphState
 
+
 def convert_naver_blog_url(url: str) -> str:
     """
     Naver 블로그 URL을 변환합니다.

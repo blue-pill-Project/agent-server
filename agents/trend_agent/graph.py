@@ -9,7 +9,6 @@ from agents.trend_agent.nodes import (
 )
 
 
-
 def build_trend_graph() -> StateGraph:
     graph = StateGraph(GraphState)
 
@@ -26,4 +25,4 @@ def build_trend_graph() -> StateGraph:
     graph.add_edge("extract_trends", "save_results")
     graph.add_edge("save_results", END)
 
-    return graph
+    return graph.compile()

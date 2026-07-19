@@ -1,10 +1,11 @@
 from common.db.connection import get_connection
 
+
 def save_trends(
     trends: list,
     current_month: str,
 ) -> bool:
-  
+
     if not trends.trends:
         return True
 
@@ -29,4 +30,3 @@ def save_trends(
     except Exception as e:
         print(f"Failed to save trends: {e}")
         return False
-    

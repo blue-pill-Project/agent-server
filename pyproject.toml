@@ -10,4 +10,5 @@ dependencies = [
     "langchain-openrouter>=0.2.6",
     "langgraph>=1.2.9",
     "psycopg>=3.3.4",
+    "ruff>=0.15.22",
 ]
