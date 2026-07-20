@@ -6,12 +6,11 @@ from api.schemas.trend import TrendResponse
 
 router = APIRouter(prefix="/trend", tags=["trend"])
 
-trend_agent = TrendAgent()
-
 
 @router.post("/run", response_model=TrendResponse)
 async def run_trend():
+    trend_agent = TrendAgent()
 
-    state = await trend_agent.run()
+    result = await trend_agent.run()
 
-    return {"is_saved": state["is_saved"]}
+    return TrendResponse(success=result)

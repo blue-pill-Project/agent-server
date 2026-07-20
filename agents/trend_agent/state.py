@@ -1,6 +1,12 @@
+from dataclasses import dataclass
 from datetime import date
 from pydantic import BaseModel, Field
 from typing_extensions import TypedDict
+
+
+@dataclass
+class Context:
+    current_month: str
 
 
 class RawTrendResultsWithNaverBlog(BaseModel):

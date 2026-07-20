@@ -2,4 +2,3 @@ from .search_trends_with_naver_blog import search_trends_with_naver_blog
 from .filter_results import filter_results
 from .scrap_contents import scrap_contents
 from .extract_trends import extract_trends
-from .save_results import save_results

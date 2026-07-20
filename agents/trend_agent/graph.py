@@ -5,7 +5,6 @@ from agents.trend_agent.nodes import (
     scrap_contents,
     search_trends_with_naver_blog,
     filter_results,
-    save_results,
 )
 
 
@@ -16,13 +15,11 @@ def build_trend_graph() -> StateGraph:
     graph.add_node("filter_results", filter_results)
     graph.add_node("scrap_contents", scrap_contents)
     graph.add_node("extract_trends", extract_trends)
-    graph.add_node("save_results", save_results)
 
     graph.add_edge(START, "search_trends_with_naver_blog")
     graph.add_edge("search_trends_with_naver_blog", "filter_results")
     graph.add_edge("filter_results", "scrap_contents")
     graph.add_edge("scrap_contents", "extract_trends")
-    graph.add_edge("extract_trends", "save_results")
-    graph.add_edge("save_results", END)
+    graph.add_edge("extract_trends", END)
 
     return graph.compile()

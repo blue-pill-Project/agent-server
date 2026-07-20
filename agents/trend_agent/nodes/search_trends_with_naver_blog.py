@@ -5,7 +5,7 @@ import json
 from dotenv import load_dotenv
 from agents.trend_agent.state import GraphState
 from langgraph.runtime import Runtime
-from agents.weekly_plan_agent.state import Context
+from agents.trend_agent.state import Context
 
 load_dotenv()
 

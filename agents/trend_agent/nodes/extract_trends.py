@@ -1,9 +1,7 @@
 from agents.trend_agent.llm import extract_trends_llm
 from agents.trend_agent.prompts import trend_extractor_instruction
-from agents.trend_agent.state import GraphState, Trends
+from agents.trend_agent.state import Context, GraphState, Trends
 from langgraph.runtime import Runtime
-
-from agents.weekly_plan_agent.state import Context
 
 
 def extract_trends(state: GraphState, runtime: Runtime[Context]) -> str:

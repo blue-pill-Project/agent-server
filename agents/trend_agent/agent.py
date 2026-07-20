@@ -1,12 +1,8 @@
-from dataclasses import dataclass
 from agents.base import BaseAgent
 from agents.trend_agent.graph import build_trend_graph
+from agents.trend_agent.state import Context
 from common.utils.date import get_current_month
-
-
-@dataclass
-class TrendContext:
-    current_month: str
+from domains.trend.repository import save_trends
 
 
 class TrendAgent(BaseAgent):
@@ -18,8 +14,12 @@ class TrendAgent(BaseAgent):
     ):
         current_month = get_current_month()
 
-        context = TrendContext(
+        context = Context(
             current_month=current_month,
         )
 
-        return await self.invoke({}, context=context)
+        state = await self.invoke({}, context=context)
+
+        success = save_trends(state["trends"], current_month)
+
+        return success
