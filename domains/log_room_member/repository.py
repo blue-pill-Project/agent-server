@@ -4,6 +4,7 @@ import psycopg
 from psycopg.rows import dict_row
 from common.db.connection import get_connection
 
+
 def get_log_room_member_prompt(
     user_id: str, log_room_id: str, log_room_member_id: str
 ) -> dict:

@@ -1,19 +1,13 @@
 from datetime import date
-import os
-import psycopg
-from psycopg.rows import dict_row
+from psycopg_pool import AsyncConnectionPool
 from common.db.connection import get_connection
 
 
-def get_trends(trend_month: date) -> list[dict]:
-    database_url = os.getenv("DATABASE_URL")
+async def get_trends(trend_month: date, pool: AsyncConnectionPool) -> list[dict]:
 
-    if not database_url:
-        return []
-
-    with psycopg.connect(database_url, row_factory=dict_row) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
+    async with pool.connection() as conn:
+        async with conn.cursor() as cur:
+            await cur.execute(
                 """
                 SELECT
                     title,
@@ -27,7 +21,7 @@ def get_trends(trend_month: date) -> list[dict]:
                 (trend_month,),
             )
 
-            rows = cur.fetchall()
+            rows = await cur.fetchall()
 
     return [dict(row) for row in rows]
 

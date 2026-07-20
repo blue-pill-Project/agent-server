@@ -16,4 +16,4 @@ def build_weekly_plan_graph() -> StateGraph:
     graph.add_edge("select_trends", "generate_weekly_plan")
     graph.add_edge("generate_weekly_plan", END)
 
-    return graph.compile()
+    return graph

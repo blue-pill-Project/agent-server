@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+
+from psycopg_pool import AsyncConnectionPool
 from agents.base import BaseAgent
 from agents.weekly_plan_agent.graph import build_weekly_plan_graph
 from agents.weekly_plan_agent.state import Context
@@ -18,6 +20,9 @@ class WeeklyPlanContext:
 
 
 class WeeklyPlanAgent(BaseAgent):
+    def __init__(self, pool: AsyncConnectionPool):
+        super().__init__(pool)
+
     def build_graph(self):
         return build_weekly_plan_graph()
 
@@ -29,7 +34,7 @@ class WeeklyPlanAgent(BaseAgent):
         log_room_member_prompt = get_log_room_member_prompt(
             user_id, log_room_id, log_room_member_id
         )
-        trends = get_trends(current_month)
+        trends = await get_trends(current_month, self._pool)
 
         context = Context(
             user_id=user_id,
@@ -44,15 +49,14 @@ class WeeklyPlanAgent(BaseAgent):
 
         state = await self.invoke({}, context=context)
 
-
         plans = state["weekly_plan"]
 
         rows = [
             (
                 log_room_id,
                 log_room_member_id,
-                day_info['date'],
-                day_info['weekday'],
+                day_info["date"],
+                day_info["weekday"],
                 plan.plan,
             )
             for day_info, plan in zip(

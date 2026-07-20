@@ -10,7 +10,6 @@ def save_daily_plans(
     if not database_url:
         return False
 
-
     query = """
     INSERT INTO daily_plans (
         log_room_id,
