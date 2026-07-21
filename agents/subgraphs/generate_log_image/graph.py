@@ -4,7 +4,7 @@ from agents.subgraphs.generate_log_image.nodes import (
     generate_image,
     build_final_image_prompt,
 )
-from agents.subgraphs.generate_hourly_plan.state import GraphState
+from agents.subgraphs.generate_log_image.state import GraphState
 
 
 def build_generate_log_image_graph() -> StateGraph:

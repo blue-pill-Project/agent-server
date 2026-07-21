@@ -57,23 +57,31 @@ class DailyLogsAgent(BaseAgent):
             previous_plans=previous_plans,
             log_room_member_prompt=log_room_member_prompt,
             today_plan=today_plan,
+            # NOTE:잠깐 이미지 하드코딩
+            image_url="https://i.pinimg.com/736x/91/5e/0e/915e0e09e60665b3b653b7f8d7a30113.jpg",
         )
 
         state = await self.invoke({}, context=context)
 
         hourly_log = state["hourly_log"]
 
-        hourly_log = {
-            "public_id": uuid4(),
-            "log_room_member_id": log_room_member_id,
-            "post_date": current_date,
-            "time_slot": hourly_log.timeslot,
-            "image_url": hourly_log.log_image_url,
-            "caption": hourly_log.caption,
-            "created_at": now,
-            "updated_at": now,
+        hourly_log_for_save = (
+            uuid4(),
+            log_room_member_id,
+            current_date,
+            hourly_log.timeslot,
+            hourly_log.log_image_url,
+            hourly_log.log_text.log_text,
+            now,
+            now,
+        )
+
+        success = await self._hourly_log_repository.save(hourly_log_for_save)
+
+        return {
+            "success": success,
+            "timeslot": hourly_log.timeslot,
+            "title": hourly_log.hourly_plan.title,
+            "log_text": hourly_log.log_text.log_text,
+            "log_image_url": hourly_log.log_image_url,
         }
-
-        success = await self._hourly_log_repository.save(hourly_log)
-
-        return success

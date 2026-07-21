@@ -8,6 +8,7 @@ from agents.daily_logs_agent.state import Context, GraphState, HourlyLog
 from agents.subgraphs.generate_hourly_plan.graph import build_generate_hourly_plan_graph
 from agents.subgraphs.generate_log_image.graph import build_generate_log_image_graph
 from agents.subgraphs.generate_log_text.graph import build_generate_log_text_graph
+from langgraph.runtime import Runtime
 
 
 generate_hourly_plan_graph = build_generate_hourly_plan_graph()
@@ -20,18 +21,12 @@ compiled_generate_log_text_graph = generate_log_text_graph.compile()
 compiled_generate_log_image_graph = generate_log_image_graph.compile()
 
 
-def call_generate_hourly_plan_graph(state):
-    state = compiled_generate_hourly_plan_graph.invoke(
+async def call_generate_hourly_plan_graph(state, runtime: Runtime[Context]):
+    state = await compiled_generate_hourly_plan_graph.ainvoke(
         {
-            "character_info": state["character_info"],
-            "history": state["history"],
-            "daily_plan": state["daily_plan"],
-            "timeslot": state["timeslot"],
-            "today_chat": state["today_chat"],
-            "related_chats": state["related_chats"],
-            "previous_plans": state["previous_plans"],
             "long_term_memories": state["long_term_memories"],
-        }
+        },
+        context=runtime.context,
     )
 
     hourly_plan = state["hourly_plan"]
@@ -39,12 +34,12 @@ def call_generate_hourly_plan_graph(state):
     return {"hourly_plan": hourly_plan}
 
 
-def call_generate_log_image_graph(state):
-    state = compiled_generate_log_image_graph.invoke(
+async def call_generate_log_image_graph(state, runtime: Runtime[Context]):
+    state = await compiled_generate_log_image_graph.ainvoke(
         {
             "hourly_plan": state["hourly_plan"],
-            "image_url": state["image_url"],
-        }
+        },
+        context=runtime.context,
     )
 
     log_image_url = state["log_image_url"]
@@ -52,13 +47,12 @@ def call_generate_log_image_graph(state):
     return {"log_image_url": log_image_url}
 
 
-def call_generate_log_text_graph(state):
-    state = compiled_generate_log_text_graph.invoke(
+async def call_generate_log_text_graph(state, runtime: Runtime[Context]):
+    state = await compiled_generate_log_text_graph.ainvoke(
         {
-            "character_info": state["character_info"],
-            "history": state["history"],
             "hourly_plan": state["hourly_plan"],
-        }
+        },
+        context=runtime.context,
     )
 
     log_text = state["log_text"]
@@ -66,18 +60,19 @@ def call_generate_log_text_graph(state):
     return {"log_text": log_text}
 
 
-def aggregate_log_outputs(state: GraphState):
+def aggregate_log_outputs(state: GraphState, runtime: Runtime[Context]):
     log_image_url = state["log_image_url"]
-
+    hourly_plan = state["hourly_plan"]
+    log_text = state["log_text"]
     # TODO: 타입 수정해야함
     if isinstance(log_image_url, list):
         log_image_url = log_image_url[0] if log_image_url else ""
 
     hourly_log = HourlyLog(
-        timeslot=state["timeslot"],
-        hourly_plan=state["hourly_plan"],
+        timeslot=runtime.context.timeslot,
+        hourly_plan=hourly_plan,
         log_image_url=log_image_url,
-        log_text=state["log_text"],
+        log_text=log_text,
     )
 
     return {

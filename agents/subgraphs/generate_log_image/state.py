@@ -23,7 +23,6 @@ class GraphState(TypedDict):
     generated_image_url: str
     # image_reference: dict
     image_prompt: str
-    image_url: str
     image_base64: str
     saved_image_path: str
     log_image_url: str

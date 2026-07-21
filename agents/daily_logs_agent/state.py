@@ -20,6 +20,7 @@ class Context:
     previous_plans: list[HourlyPlan]
     log_room_member_prompt: str
     today_plan: str
+    image_url: str
 
 
 class HourlyPlan(BaseModel):
