@@ -1,0 +1,1 @@
+from .generate_log_text import generate_log_text as generate_log_text

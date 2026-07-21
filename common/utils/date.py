@@ -1,5 +1,5 @@
-from datetime import date, timedelta
-
+from datetime import date, timedelta, datetime
+from zoneinfo import ZoneInfo
 
 WEEKDAYS = [
     "월요일",
@@ -10,6 +10,10 @@ WEEKDAYS = [
     "토요일",
     "일요일",
 ]
+
+
+def get_now():
+    return datetime.now(ZoneInfo("Asia/Seoul"))
 
 
 def get_current_date():

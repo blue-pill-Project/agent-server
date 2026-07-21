@@ -1,3 +1,5 @@
+from datetime import date
+
 from psycopg_pool import AsyncConnectionPool
 
 
@@ -8,9 +10,36 @@ class DailyPlanRepository:
     ):
         self._pool = pool
 
-    def get() -> bool:
+    async def get_today(
+        self, log_room_id: str, log_room_member_id: str, date: date
+    ) -> bool:
         # 구현해야함
-        return True
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    """
+                    SELECT
+                        date,
+                        day,
+                        plan
+                    FROM daily_plans
+                    WHERE log_room_id = %s
+                    AND log_room_member_id = %s
+                    AND date = %s
+                    """,
+                    (log_room_id, log_room_member_id, date),
+                )
+
+                row = await cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "date": row["date"],
+            "day": row["day"],
+            "plan": row["plan"],
+        }
 
     async def save_all(
         self,
