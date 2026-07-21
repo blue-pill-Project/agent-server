@@ -1,36 +1,45 @@
-from datetime import date
-import os
-import psycopg
-from psycopg.rows import dict_row
-from common.db.connection import get_connection
+from psycopg_pool import AsyncConnectionPool
 
 
-def get_log_room_member_prompt(
-    user_id: str, log_room_id: str, log_room_member_id: str
-) -> dict:
-    database_url = os.getenv("DATABASE_URL")
-    if not database_url:
-        return None
+class LogRoomMemberRepository:
+    def __init__(
+        self,
+        pool: AsyncConnectionPool,
+    ):
+        self._pool = pool
 
-    with psycopg.connect(database_url, row_factory=dict_row) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                SELECT cs.name, cs.description, cs.prompt
-                FROM log_room_members lrm
-                JOIN character_snapshots cs ON cs.snapshot_id = lrm.snapshot_id
-                WHERE lrm.log_room_member_id = %s
-                LIMIT 1
-                """,
-                (int(log_room_member_id),),
-            )
-            row = cur.fetchone()
+    async def get_prompt(
+        self,
+        user_id: int,
+        log_room_id: int,
+        log_room_member_id: int,
+    ) -> dict | None:
+        query =  """
+            SELECT cs.name, cs.description, cs.prompt
+            FROM log_room_members lrm
+            JOIN character_snapshots cs ON cs.snapshot_id = lrm.snapshot_id
+            WHERE lrm.log_room_member_id = %s
+            LIMIT 1
+        """
 
-    if not row:
-        return None
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    query,
+                    (
+                        log_room_member_id,
+                        # log_room_id,
+                    ),
+                )
 
-    return {
-        "name": row["name"],
-        "description": row["description"],
-        "prompt": row["prompt"],
-    }
+                row = await cursor.fetchone()
+
+        if not row:
+            return None
+        
+        return {
+            "name": row["name"],
+            "description": row["description"],
+            "prompt": row["prompt"],
+        }
+
