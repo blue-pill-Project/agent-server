@@ -2,10 +2,18 @@ from agents.base import BaseAgent
 from agents.trend_agent.graph import build_trend_graph
 from agents.trend_agent.state import Context
 from common.utils.date import get_current_month
-from domains.trend.repository import save_trends
+from domains.trend.repository import TrendRepository
 
 
 class TrendAgent(BaseAgent):
+    def __init__(
+        self,
+        trend_repository: TrendRepository,
+    ):
+        super().__init__()
+
+        self._trend_repository = trend_repository
+
     def build_graph(self):
         return build_trend_graph()
 
@@ -20,6 +28,13 @@ class TrendAgent(BaseAgent):
 
         state = await self.invoke({}, context=context)
 
-        success = save_trends(state["trends"], current_month)
+        trends = state["trends"]
+
+        rows = [
+            (current_month, t.title, t.category, t.location, t.summary)
+            for t in trends.trends
+        ]
+
+        success = await self._trend_repository.save_all(rows)
 
         return success

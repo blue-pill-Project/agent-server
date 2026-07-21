@@ -1,5 +1,6 @@
 from psycopg_pool import AsyncConnectionPool
 
+
 class DailyPlanRepository:
     def __init__(
         self,
@@ -41,7 +42,3 @@ class DailyPlanRepository:
         except Exception as e:
             print(f"Failed to save trends: {e}")
             return False
-
-
-
-

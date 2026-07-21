@@ -1,27 +1,25 @@
 from dataclasses import dataclass
-
-from psycopg_pool import AsyncConnectionPool
 from agents.base import BaseAgent
 from agents.weekly_plan_agent.graph import build_weekly_plan_graph
 from agents.weekly_plan_agent.state import Context
 from common.utils.date import create_week_dates, get_current_date, get_current_month
-from domains.daily_plan.repository import save_daily_plans
-from domains.log_room_member.repository import get_log_room_member_prompt
-from domains.trend.repository import get_trends
-
-
-@dataclass
-class WeeklyPlanContext:
-    current_month: str
-    current_date: str
-    week_dates: list[dict]
-    log_room_member_prompt: dict
-    trends: list[dict]
+from domains.daily_plan.repository import DailyPlanRepository
+from domains.log_room_member.repository import LogRoomMemberRepository
+from domains.trend.repository import TrendRepository
 
 
 class WeeklyPlanAgent(BaseAgent):
-    def __init__(self, pool: AsyncConnectionPool):
-        super().__init__(pool)
+    def __init__(
+        self,
+        trend_repository: TrendRepository,
+        daily_plan_repository: DailyPlanRepository,
+        log_room_member_repository: LogRoomMemberRepository,
+    ):
+        super().__init__()
+
+        self._trend_repository = trend_repository
+        self._daily_plan_repository = daily_plan_repository
+        self._log_room_member_repository = log_room_member_repository
 
     def build_graph(self):
         return build_weekly_plan_graph()
@@ -31,10 +29,10 @@ class WeeklyPlanAgent(BaseAgent):
         current_month = get_current_month()
         current_date = get_current_date()
         week_dates = create_week_dates(current_date)
-        log_room_member_prompt = get_log_room_member_prompt(
+        log_room_member_prompt = await self._log_room_member_repository.get_prompt(
             user_id, log_room_id, log_room_member_id
         )
-        trends = await get_trends(current_month, self._pool)
+        trends = await self._trend_repository.get_by_month(current_month)
 
         context = Context(
             user_id=user_id,
@@ -65,6 +63,6 @@ class WeeklyPlanAgent(BaseAgent):
             )
         ]
 
-        success = save_daily_plans(rows)
+        success = await self._daily_plan_repository.save_all(rows)
 
         return success

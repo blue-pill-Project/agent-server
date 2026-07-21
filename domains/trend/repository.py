@@ -1,5 +1,6 @@
 from psycopg_pool import AsyncConnectionPool
 
+
 class TrendRepository:
     def __init__(
         self,
@@ -32,7 +33,7 @@ class TrendRepository:
                 rows = await cursor.fetchall()
 
         return [dict(row) for row in rows]
-    
+
     async def save_all(
         self,
         trends: list,
@@ -56,7 +57,3 @@ class TrendRepository:
         except Exception as e:
             print(f"Failed to save trends: {e}")
             return False
-    
-
-
-

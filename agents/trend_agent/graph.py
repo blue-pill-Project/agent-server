@@ -22,4 +22,4 @@ def build_trend_graph() -> StateGraph:
     graph.add_edge("scrap_contents", "extract_trends")
     graph.add_edge("extract_trends", END)
 
-    return graph.compile()
+    return graph

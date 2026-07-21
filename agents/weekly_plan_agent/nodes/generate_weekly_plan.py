@@ -15,8 +15,6 @@ def generate_weekly_plan(state: GraphState, runtime: Runtime[Context]) -> str:
         log_room_member_prompt=log_room_member_prompt,
         selected_trends=selected_trends,
     )
-    structured_model = generate_weekly_plan_llm.with_structured_output(
-        WeeklyPlan, method="json_schema"
-    )
+    structured_model = generate_weekly_plan_llm.with_structured_output(WeeklyPlan)
     response = structured_model.invoke(formatted_prompt)
     return {"weekly_plan": response}
