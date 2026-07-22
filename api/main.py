@@ -1,9 +1,3 @@
-from dotenv import load_dotenv
-
-
-load_dotenv()
-
-
 from fastapi import FastAPI
 from agents.weekly_plan_agent.agent import WeeklyPlanAgent
 from agents.daily_logs_agent.agent import DailyLogsAgent
@@ -19,10 +13,13 @@ from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository
 from domains.hourly_log.repository import HourlyLogRepository
+from common.config import settings
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # 서버 시작할 떄 환경변수 체크
+    settings.validate()
     pool = create_db_pool()
 
     await pool.open()

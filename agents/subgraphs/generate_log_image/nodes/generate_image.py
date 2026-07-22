@@ -8,9 +8,8 @@ from agents.daily_logs_agent.state import Context
 from agents.subgraphs.generate_log_image.state import GraphState
 from common.utils.r2 import get_r2_client
 from langgraph.runtime import Runtime
+from common.config import settings
 
-
-api_key = os.getenv("OPENROUTER_API_KEY")
 
 
 def generate_image(state: GraphState, runtime: Runtime[Context]):
@@ -21,7 +20,7 @@ def generate_image(state: GraphState, runtime: Runtime[Context]):
     response = requests.post(
         url="https://openrouter.ai/api/v1/images",
         headers={
-            "Authorization": f"Bearer {api_key}",
+            "Authorization": f"Bearer {settings.DATABASE_URL}",
             "Content-Type": "application/json",
         },
         data=json.dumps(

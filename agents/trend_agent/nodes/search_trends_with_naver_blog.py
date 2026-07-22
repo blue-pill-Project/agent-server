@@ -2,15 +2,10 @@ import os
 import urllib.request
 import urllib.parse
 import json
-from dotenv import load_dotenv
 from agents.trend_agent.state import GraphState
 from langgraph.runtime import Runtime
 from agents.trend_agent.state import Context
-
-load_dotenv()
-
-NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID")
-NAVER_CLIENT_SECRET = os.getenv("NAVER_CLIENT_SECRET")
+from common.config import settings
 
 
 def search_trends_with_naver_blog(state: GraphState, runtime: Runtime[Context]) -> dict:
@@ -37,8 +32,8 @@ def search_trends_with_naver_blog(state: GraphState, runtime: Runtime[Context]) 
         )
 
         request = urllib.request.Request(url)
-        request.add_header("X-Naver-Client-Id", NAVER_CLIENT_ID)
-        request.add_header("X-Naver-Client-Secret", NAVER_CLIENT_SECRET)
+        request.add_header("X-Naver-Client-Id", settings.NAVER_CLIENT_ID)
+        request.add_header("X-Naver-Client-Secret", settings.NAVER_CLIENT_SECRET)
 
         response = urllib.request.urlopen(request)
 
