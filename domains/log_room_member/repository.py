@@ -42,3 +42,28 @@ class LogRoomMemberRepository:
             "description": row["description"],
             "prompt": row["prompt"],
         }
+
+    # TODO: Logroom Repositiry로 분리해야할듯
+    async def get_relationship(
+        self,
+        log_room_id: int,
+    ) -> dict | None:
+        query = """
+                SELECT label
+                FROM log_room_relationships
+                WHERE log_room_id = %s
+                LIMIT 1
+        """
+
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    query,
+                    (log_room_id,),
+                )
+                row = await cursor.fetchone()
+
+        if not row:
+            return None
+
+        return row["label"] if row else "친구"

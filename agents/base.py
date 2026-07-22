@@ -1,17 +1,18 @@
 from abc import ABC, abstractmethod
 from langgraph.graph import StateGraph
 from langgraph.graph.state import BaseStore, CompiledStateGraph
+from langgraph.checkpoint.base import BaseCheckpointSaver
 
 
 class BaseAgent(ABC):
     def __init__(
         self,
         store: BaseStore | None = None,
-        # checkpointer : BaseCheckpointer
+        checkpointer: BaseCheckpointSaver | None = None,
     ):
         self._graph: CompiledStateGraph | None = None
         self._store = store
-        # self._checkpointer = store
+        self._checkpointer = checkpointer
 
     @abstractmethod
     def build_graph(self) -> StateGraph:
@@ -23,6 +24,7 @@ class BaseAgent(ABC):
 
             self._graph = graph_builder.compile(
                 store=self._store,
+                checkpointer=self._checkpointer,
             )
 
         return self._graph
