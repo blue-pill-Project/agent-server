@@ -11,7 +11,3 @@ class DailyLogsRequest(BaseModel):
 
 class DailyLogsResponse(BaseModel):
     success: bool
-    timeslot: str
-    title: str
-    log_text: str
-    log_image_url: str

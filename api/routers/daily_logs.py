@@ -21,4 +21,4 @@ async def run_daily_logs(
         timeslot, user_id, log_room_id, log_room_member_id, previous_plans
     )
 
-    return DailyLogsResponse(**result)
+    return DailyLogsResponse(success=result)

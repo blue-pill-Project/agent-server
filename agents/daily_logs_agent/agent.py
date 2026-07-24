@@ -78,10 +78,5 @@ class DailyLogsAgent(BaseAgent):
 
         success = await self._hourly_log_repository.save(hourly_log_for_save)
 
-        return {
-            "success": success,
-            "timeslot": hourly_log.timeslot,
-            "title": hourly_log.hourly_plan.title,
-            "log_text": hourly_log.log_text.log_text,
-            "log_image_url": hourly_log.log_image_url,
-        }
+        return success
+
