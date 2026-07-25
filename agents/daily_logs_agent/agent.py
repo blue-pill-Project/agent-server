@@ -79,4 +79,3 @@ class DailyLogsAgent(BaseAgent):
         success = await self._hourly_log_repository.save(hourly_log_for_save)
 
         return success
-

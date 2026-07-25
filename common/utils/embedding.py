@@ -1,6 +1,7 @@
 from langchain_openai import OpenAIEmbeddings
 from common.config import settings
 
+
 def embed_text(text: str) -> list[float]:
     embeddings = OpenAIEmbeddings(
         model="openai/text-embedding-3-small",

@@ -24,18 +24,10 @@ class Settings:
             "OPENROUTER_API_KEY": self.OPENROUTER_API_KEY,
         }
 
-        missing = [
-            name
-            for name, value in required_settings.items()
-            if not value
-        ]
+        missing = [name for name, value in required_settings.items() if not value]
 
         if missing:
-            raise RuntimeError(
-                "필수 환경변수가 없습니다: "
-                + ", ".join(missing)
-            )
+            raise RuntimeError("필수 환경변수가 없습니다: " + ", ".join(missing))
+
 
 settings = Settings()
-
-
