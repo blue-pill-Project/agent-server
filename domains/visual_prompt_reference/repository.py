@@ -8,15 +8,15 @@ class VisualPromptReferenceRepository:
     ):
         self._pool = pool
 
-    async def save_all(
+    async def save(
         self,
-        visual_prompt_references: tuple,
+        visual_prompt_reference: tuple,
     ) -> bool:
-        if not visual_prompt_references:
+        if not visual_prompt_reference:
             return True
 
         query = """
-            INSERT INTO visual_prompt_references (
+            INSERT INTO prompt_references (
                 category,
                 participant_count,
                 prompt,
@@ -28,9 +28,9 @@ class VisualPromptReferenceRepository:
         try:
             async with self._pool.connection() as conn:
                 async with conn.cursor() as cursor:
-                    await cursor.executemany(
+                    await cursor.execute(
                         query,
-                        visual_prompt_references,
+                        visual_prompt_reference,
                     )
 
             return True

@@ -1,5 +1,5 @@
 from common.utils.embedding import embed_text
-from agents.subgraphs.image_to_prompt.state import GraphState
+from agents.visual_prompt_reference.state import GraphState
 
 
 def embed_image_prompt(state: GraphState) -> GraphState:

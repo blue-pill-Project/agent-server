@@ -2,9 +2,10 @@ from common.llm.factory import get_llm
 from common.llm.config import LLMConfig
 from common.llm.models import Models
 
-generate_reply_llm = get_llm(
+
+extract_prompt_from_image_llm = get_llm(
     LLMConfig(
-        model=Models.GEMINI_FLASH_LITE,
-        temperature=0.7,
+        model="google/gemini-3.6-flash",
+        temperature=1,
     )
 )

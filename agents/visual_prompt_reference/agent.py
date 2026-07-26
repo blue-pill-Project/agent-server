@@ -2,6 +2,7 @@ from uuid import uuid4
 from agents.base import BaseAgent
 from agents.visual_prompt_reference.state import Context
 from agents.visual_prompt_reference.graph import build_visual_prompt_reference_graph
+from common.utils.embedding import embed_text
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 
 
@@ -19,27 +20,29 @@ class VisualPromptReferenceAgent(BaseAgent):
 
     async def run(
         self,
-        pinterest_url: str,
+        image_bytes: bytes,
+        image_content_type: str,
     ):
 
         context = Context(
-            pinterest_url=pinterest_url,
+            image_bytes=image_bytes,
+            image_content_type=image_content_type,
         )
 
         state = await self.invoke({}, context=context)
 
-        visual_prompt_references = state["visual_prompt_references"]
+        visual_prompt_reference = state["visual_prompt_reference"]
 
-        rows = [
-            (
-                item["category"],
-                item["participant_count"],
-                item["prompt"],
-                item["embedding"],
-            )
-            for item in visual_prompt_references
-        ]
+        visual_prompt_reference_for_save = (
+            visual_prompt_reference.category,
+            visual_prompt_reference.participant_count,
+            visual_prompt_reference.prompt,
+            embed_text(visual_prompt_reference.prompt),
+        )
 
-        success = await self._visual_prompt_reference_repository.save_all(rows)
+        success = await self._visual_prompt_reference_repository.save(
+            visual_prompt_reference_for_save
+        )
+        print(visual_prompt_reference)
 
         return success
