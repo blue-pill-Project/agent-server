@@ -15,7 +15,7 @@ class LogRoomMemberRepository:
         log_room_member_id: int,
     ) -> dict | None:
         query = """
-            SELECT cs.name, cs.description, cs.prompt
+            SELECT cs.name, cs.description, cs.prompt, cs.example_dialogues
             FROM log_room_members lrm
             JOIN character_snapshots cs ON cs.snapshot_id = lrm.snapshot_id
             WHERE lrm.log_room_member_id = %s
@@ -41,6 +41,7 @@ class LogRoomMemberRepository:
             "name": row["name"],
             "description": row["description"],
             "prompt": row["prompt"],
+            "example_dialogues": row["example_dialogues"]
         }
 
     # TODO: Logroom Repositiry로 분리해야할듯

@@ -37,6 +37,9 @@ generate_reply_system_instructions = """
                 [캐릭터와 나와의 관계]
                 {log_room_relationships}
 
+                [말투 예시]
+                {example_dialogues}
+
                 [대화 규칙]
                 - 캐릭터 설정과 말투를 유지한다.
                 - 사용자를 관계에 맞게 자연스럽게 대한다.
