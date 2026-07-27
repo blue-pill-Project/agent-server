@@ -29,8 +29,7 @@ async def test_generate_hourly_plan() -> None:
         성수동 팝업스토어를 방문
         """,
         image_url=(
-            "https://i.pinimg.com/736x/91/5e/0e/"
-            "915e0e09e60665b3b653b7f8d7a30113.jpg"
+            "https://i.pinimg.com/736x/91/5e/0e/915e0e09e60665b3b653b7f8d7a30113.jpg"
         ),
     )
 
