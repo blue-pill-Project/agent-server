@@ -16,13 +16,14 @@ class VisualPromptReferenceRepository:
             return True
 
         query = """
-            INSERT INTO prompt_references (
+            INSERT INTO visual_prompt_references (
                 category,
                 participant_count,
                 prompt,
-                embedding
+                situation,
+                situation_embedding
             )
-            VALUES (%s, %s, %s, %s)
+            VALUES (%s, %s, %s,%s, %s)
         """
 
         try:

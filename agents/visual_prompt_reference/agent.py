@@ -37,12 +37,15 @@ class VisualPromptReferenceAgent(BaseAgent):
             visual_prompt_reference.category,
             visual_prompt_reference.participant_count,
             visual_prompt_reference.prompt,
-            embed_text(visual_prompt_reference.prompt),
+            visual_prompt_reference.situation,
+            embed_text(visual_prompt_reference.situation),
         )
 
         success = await self._visual_prompt_reference_repository.save(
             visual_prompt_reference_for_save
         )
-        print(visual_prompt_reference)
+
+        #TODO: 테스트 후 삭제해야함
+        print(visual_prompt_reference.situation)
 
         return success

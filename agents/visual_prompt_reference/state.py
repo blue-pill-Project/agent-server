@@ -20,7 +20,7 @@ class ImagePromptCategory(str, Enum):
     OBJECT_PHOTO = "object_photo"
 
 
-class ImagePrompt(BaseModel):
+class ShotSpec(BaseModel):
     category: ImagePromptCategory = Field(description="Main category of image")
     participant_count: int = Field(
         description="Number of main characters appearing in the image"
@@ -29,6 +29,18 @@ class ImagePrompt(BaseModel):
         description="Reusable filming-style prompt excluding character appearance, costume, props, and specific locations"
     )
 
+class VisualPromptReference(BaseModel):
+    category: ImagePromptCategory = Field(description="Main category of image")
+    participant_count: int = Field(
+        description="Number of main characters appearing in the image"
+    )
+    prompt: str = Field(
+        description="Reusable filming-style prompt excluding character appearance, costume, props, and specific locations"
+    )
+    situation: str
+
 
 class GraphState(TypedDict):
-    visual_prompt_reference: str
+    shot_spec: ShotSpec
+    situation: str
+    visual_prompt_reference:VisualPromptReference

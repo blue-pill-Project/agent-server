@@ -9,3 +9,11 @@ extract_prompt_from_image_llm = get_llm(
         temperature=1,
     )
 )
+
+
+extract_situation_from_image_llm = get_llm(
+    LLMConfig(
+        model="google/gemini-3.6-flash",
+        temperature=0.3,
+    )
+)

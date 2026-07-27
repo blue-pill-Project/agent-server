@@ -1,25 +1,25 @@
 import base64
-from agents.visual_prompt_reference.llm import extract_prompt_from_image_llm
-from agents.visual_prompt_reference.state import Context, GraphState, ShotSpec
+from agents.visual_prompt_reference.llm import extract_situation_from_image_llm
+from agents.visual_prompt_reference.state import Context, GraphState
 from langgraph.runtime import Runtime
-from agents.visual_prompt_reference.prompts import extract_prompt_from_image_instructions
+from agents.visual_prompt_reference.prompts import extract_situation_from_image_instructions
 
-def extract_prompt_from_image(
+
+def extract_situation_from_image(
     state: GraphState, runtime: Runtime[Context]
 ) -> GraphState:
     image_bytes = runtime.context.image_bytes
 
     encoded_image = base64.b64encode(image_bytes).decode("utf-8")
 
-    structured_model = extract_prompt_from_image_llm.with_structured_output(ShotSpec)
-    response = structured_model.invoke(
+    response = extract_situation_from_image_llm.invoke(
         [
             {
                 "role": "human",
                 "content": [
                     {
                         "type": "text",
-                        "text": extract_prompt_from_image_instructions,
+                        "text": extract_situation_from_image_instructions,
                     },
                     {
                         "type": "image",
@@ -31,4 +31,4 @@ def extract_prompt_from_image(
         ]
     )
 
-    return {"shot_spec": response}
+    return {"situation": response.content}
