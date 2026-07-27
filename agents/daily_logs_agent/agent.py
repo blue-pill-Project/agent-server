@@ -6,6 +6,7 @@ from common.utils.date import get_current_date, get_current_month, get_now
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.hourly_log.repository import HourlyLogRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
+from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 from langgraph.graph.state import BaseStore
 
 
@@ -15,6 +16,7 @@ class DailyLogsAgent(BaseAgent):
         log_room_member_repository: LogRoomMemberRepository,
         daily_plan_repository: DailyPlanRepository,
         hourly_log_repository: HourlyLogRepository,
+        visual_prompt_reference_repository: VisualPromptReferenceRepository,
         store: BaseStore,
     ):
         super().__init__(
@@ -24,6 +26,7 @@ class DailyLogsAgent(BaseAgent):
         self._log_room_member_repository = log_room_member_repository
         self._daily_plan_repository = daily_plan_repository
         self._hourly_log_repository = hourly_log_repository
+        self._visual_prompt_reference_repository = visual_prompt_reference_repository
 
     def build_graph(self):
         return build_daily_logs_graph()
@@ -59,6 +62,9 @@ class DailyLogsAgent(BaseAgent):
             today_plan=today_plan,
             # NOTE:잠깐 이미지 하드코딩
             image_url="https://i.pinimg.com/736x/91/5e/0e/915e0e09e60665b3b653b7f8d7a30113.jpg",
+            visual_prompt_reference_repository=(
+                self._visual_prompt_reference_repository
+            ),
         )
 
         state = await self.invoke({}, context=context)

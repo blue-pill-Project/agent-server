@@ -21,8 +21,9 @@ class GraphState(TypedDict):
     hourly_plan: HourlyPlan
     image_category: str
     generated_image_url: str
-    # image_reference: dict
+    image_reference: dict
     image_prompt: str
     image_base64: str
     saved_image_path: str
     log_image_url: str
+    visual_prompt_reference_search_query: str

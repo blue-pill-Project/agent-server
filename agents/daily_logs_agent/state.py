@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 import datetime
-from typing import NotRequired
+from typing import Any, NotRequired
 
 from typing_extensions import TypedDict, Literal
 from pydantic import BaseModel, Field
-# from src.graphs.subgraphs.generate_log_image.state import GraphState
 
 TimeSlot = Literal["6", "9", "12", "15", "18", "21", "0", "3"]
 
@@ -21,6 +20,7 @@ class Context:
     log_room_member_prompt: str
     today_plan: str
     image_url: str
+    visual_prompt_reference_repository: Any
 
 
 class HourlyPlan(BaseModel):

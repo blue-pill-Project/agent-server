@@ -22,6 +22,93 @@ classify_image_category_instructions = """
         다음 상황에서 캐릭터가 어떤 사진을 찍었을지 사진의 종류를 알려주세요
         Post context:
         {hourly_plan_description}
+
+"""
+
+
+build_visual_prompt_reference_search_query_instructions = """당신은 이미지 생성에 활용할 촬영 구도 레퍼런스를 찾는 검색 쿼리 설계자입니다.
+        목표
+        사용자가 제공한 상황을 분석하여, 그 상황을 사진으로 가장 자연스럽고 명확하게 표현할 수 있는 하나의 최적 구도를 선택하고, 이미지 검색용 한글 쿼리 하나를 만드세요.
+        검색 대상은 캐릭터나 장소 자체가 아니라 다음과 같은 ‘시각적 촬영 문법’입니다.
+
+
+        subject의 자세와 행동
+        손과 사물의 상호작용
+        subject의 시선
+        카메라 앵글
+        촬영 거리
+        프레임 안의 배치
+        전경·중경·배경의 관계
+        자연스러운 사진 스타일
+        작업 방법
+        입력된 상황을 내부적으로 다음 순서에 따라 분석하세요.
+
+
+        사진에서 가장 중요하게 보여야 할 행동을 찾습니다.
+        행동을 가장 명확하게 보여주는 자세와 손동작을 정합니다.
+        시각적 중심이 인물, 사물 또는 둘의 상호작용 중 어디에 있는지 판단합니다.
+        가장 적합한 카메라 앵글과 촬영 거리를 하나만 선택합니다.
+        선택한 구도를 검색할 수 있는 한글 키워드로 변환합니다.
+        분석 과정은 출력하지 말고 최종 검색 쿼리만 출력하세요.
+
+
+
+        검색 쿼리 작성 원칙
+        1. 상황을 그대로 번역하지 마세요
+        상황의 의미를 사진에서 실제로 관찰할 수 있는 자세와 행동으로 변환하세요.
+        예:
+        피곤하다 → curled up, lying face down, covering face
+        사색한다 → chin on hand, looking away
+        굿즈를 확인한다 → holding collectible, looking down at item
+        주변을 둘러본다 → walking slowly, looking at storefront
+        휴대폰으로 정보를 확인한다 → looking down at phone, over the shoulder phone view
+        happy, tired, thoughtful 같은 추상적인 감정보다 구체적인 자세와 행동을 우선하세요.
+
+
+        2. 가장 적합한 구도 하나만 선택하세요
+        여러 가능성을 나열하거나 대체 쿼리를 제시하지 마세요.
+        상황의 핵심 행동과 사물의 관계가 가장 명확하게 드러나는 구도 하나를 선택하세요.
+
+        3. 구도를 결정하는 요소를 우선하세요
+        다음 우선순위에 따라 검색어를 구성하세요.
+
+        기본 자세
+        핵심 행동과 손동작
+        사물과의 상호작용
+        카메라 앵글
+        촬영 거리
+        전경·중경·배경 관계
+        시선 방향
+        공간
+        사진 스타일
+
+        4. 고유 정보는 일반화하세요
+        인물과 장소가 바뀌어도 동일한 구도를 검색할 수 있어야 합니다.
+        캐릭터 이름 → person 또는 subject
+        토이 스토리 굿즈 → small collectible
+        특정 식당 이름 → restaurant
+        특정 팝업 이름 → exhibition 또는 pop-up store
+        특정 음식 → food 또는 dinner plate
+        다만 사물의 크기나 형태가 구도에 영향을 준다면 유지하세요.
+
+        작은 피규어 → small figurine
+        쇼핑백 → shopping bag
+        스마트폰 → smartphone
+        커다란 인형 → large plush toy
+
+        5. 짧고 구체적인 한글 쿼리를 만드세요
+        다음 구조를 기본으로 사용하세요.
+        [자세와 행동] + [사물과의 상호작용] + [카메라 구도] + [공간] + [사진 스타일]
+        검색 쿼리는 완전한 문장보다 검색 키워드 조합에 가깝게 작성하고, 6~14개의 한글단어로 제한하세요.
+        aesthetic, beautiful, cinematic처럼 구도를 구체적으로 설명하지 못하는 단어는 꼭 필요한 경우가 아니면 사용하지 마세요.
+
+        출력 규칙
+        한글 검색 쿼리 하나만 출력하세요.
+        설명, 제목, 분석, 번역, 따옴표, 대체 쿼리를 출력하지 마세요.
+        검색 쿼리를 한 줄로 작성하세요.
+
+        입력 상황
+        {hourly_plan_description} 
 """
 
 build_final_image_prompt_instructions = """

@@ -1,49 +1,23 @@
+import pprint
 from common.utils.embedding import embed_text
 from agents.subgraphs.generate_log_image.state import GraphState
+from langgraph.runtime import Runtime
+from agents.daily_logs_agent.state import Context
 
 
-# TODO: 에이전트 서버 합치면서 현재 사용 안함 리팩토링 할때 연결 하거나 해야함
-# 그리고 사용안했을때 출력물 품질도 확인해야함
-def retrieve_image_prompt(state: GraphState):
-    return True
-    # hourly_plan_description = state["hourly_plan"].description
-    # category = state["image_category"]
+async def retrieve_image_prompt(state: GraphState, runtime: Runtime[Context]):
+    repository = runtime.context.visual_prompt_reference_repository
 
-    # print(category)
+    visual_prompt_reference_search_query = state["visual_prompt_reference_search_query"]
+    category = state["image_category"].value
 
-    # query_vector = str(embed_text(hourly_plan_description))
+    embedding = embed_text(visual_prompt_reference_search_query)
 
-    # sql = """
-    #     SELECT
-    #         id,
-    #         category,
-    #         participant_count,
-    #         prompt,
-    #         embedding <=> %s::vector AS distance
-    #     FROM prompt_references
-    #     WHERE category = %s
-    #     ORDER BY embedding <=> %s::vector
-    #     LIMIT 1
-    # """
+    print(visual_prompt_reference_search_query)
 
-    # conn = get_connection()
+    reference = await repository.search(
+        category=category,
+        query_vector=embedding,
+    )
 
-    # try:
-    #     with conn.cursor() as cur:
-    #         cur.execute(sql, (query_vector, category, query_vector))
-    #         row = cur.fetchone()
-    # finally:
-    #     conn.close()
-
-    # if row is None:
-    #     return {"image_reference": None}
-
-    # return {
-    #     "image_reference": {
-    #         "id": row[0],
-    #         "category": row[1],
-    #         "participant_count": row[2],
-    #         "prompt": row[3],
-    #         "distance": float(row[4]),
-    #     }
-    # }
+    return {"image_reference": reference}
