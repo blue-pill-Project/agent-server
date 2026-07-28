@@ -60,6 +60,7 @@ async def lifespan(app: FastAPI):
             log_room_member_repository=log_room_member_repository,
             daily_plan_repository=daily_plan_repository,
             hourly_log_repository=hourly_log_repository,
+            visual_prompt_reference_repository=visual_prompt_reference_repository,
             store=store,
         )
 
