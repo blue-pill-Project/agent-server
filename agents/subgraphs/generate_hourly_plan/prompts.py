@@ -6,6 +6,8 @@ generate_hourly_plan_instructions = """
         title 과 description 에는 그 시간대의 행동을 적고, outfit(착장)과 location(장소)은 각각의 필드에 채웁니다.
         무엇을 느끼는지가 아니라 무엇을 하는지만 정확하게 적습니다.
 
+        중요: 전부 한국어로 적습니다
+
         다음은 캐릭터의 정보입니다.
         {log_room_member_prompt}
         다음은 오늘 하루의 전체 계획입니다.

@@ -36,5 +36,5 @@ class HourlyLogRepository:
 
             return True
         except Exception as e:
-            print(f"Failed to save trends: {e}")
+            print(f"Failed to save hourly log: {e}")
             return False

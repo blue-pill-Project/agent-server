@@ -11,7 +11,6 @@ from langgraph.runtime import Runtime
 from common.config import settings
 
 
-
 def generate_image(state: GraphState, runtime: Runtime[Context]):
 
     image_prompt = state["image_prompt"]
