@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from agents.base import BaseAgent
 from agents.weekly_plan_agent.graph import build_weekly_plan_graph
 from agents.weekly_plan_agent.state import Context
-from common.utils.date import create_week_dates, get_current_date, get_current_month
+from common.utils.date import create_week_dates, get_current_date, get_current_month, get_next_week_start
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository
@@ -28,7 +28,8 @@ class WeeklyPlanAgent(BaseAgent):
 
         current_month = get_current_month()
         current_date = get_current_date()
-        week_dates = create_week_dates(current_date)
+        week_start = get_next_week_start(current_date)   # 다가오는 주 월요일
+        week_dates = create_week_dates(week_start)
         log_room_member_prompt = await self._log_room_member_repository.get_prompt(
             user_id, log_room_id, log_room_member_id
         )
