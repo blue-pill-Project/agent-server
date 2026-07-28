@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from agents.base import BaseAgent
 from agents.weekly_plan_agent.graph import build_weekly_plan_graph
 from agents.weekly_plan_agent.state import Context
-from common.utils.date import create_week_dates, get_current_date, get_current_month
+from common.utils.datetime import create_week_dates, get_current_date, get_current_month
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository

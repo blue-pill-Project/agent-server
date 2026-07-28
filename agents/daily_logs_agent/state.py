@@ -16,6 +16,7 @@ class Context:
     current_month: datetime.date
     current_date: datetime.date
     timeslot: str
+    timeslot_label: str
     previous_plans: list[HourlyPlan]
     log_room_member_prompt: str
     today_plan: str

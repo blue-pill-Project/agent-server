@@ -2,7 +2,12 @@ from uuid import uuid4
 from agents.base import BaseAgent
 from agents.daily_logs_agent.graph import build_daily_logs_graph
 from agents.daily_logs_agent.state import Context
-from common.utils.date import get_current_date, get_current_month, get_now
+from common.utils.datetime import (
+    get_current_date,
+    get_current_month,
+    get_now,
+    get_timeslot_label,
+)
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.hourly_log.repository import HourlyLogRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
@@ -42,6 +47,7 @@ class DailyLogsAgent(BaseAgent):
 
         current_month = get_current_month()
         current_date = get_current_date()
+        timeslot_label = get_timeslot_label()
         now = get_now()
         log_room_member_prompt = await self._log_room_member_repository.get_prompt(
             user_id, log_room_id, log_room_member_id
@@ -57,6 +63,7 @@ class DailyLogsAgent(BaseAgent):
             current_month=current_month,
             current_date=current_date,
             timeslot=timeslot,
+            timeslot_label=timeslot_label,
             previous_plans=previous_plans,
             log_room_member_prompt=log_room_member_prompt,
             today_plan=today_plan,

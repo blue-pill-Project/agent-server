@@ -1,5 +1,7 @@
 from psycopg_pool import AsyncConnectionPool
 
+from agents.subgraphs.generate_log_image.state import ImageCategory
+
 
 class VisualPromptReferenceRepository:
     def __init__(
@@ -16,13 +18,14 @@ class VisualPromptReferenceRepository:
             return True
 
         query = """
-            INSERT INTO prompt_references (
+            INSERT INTO visual_prompt_references (
                 category,
                 participant_count,
                 prompt,
-                embedding
+                situation,
+                situation_embedding
             )
-            VALUES (%s, %s, %s, %s)
+            VALUES (%s, %s, %s,%s, %s)
         """
 
         try:
@@ -35,7 +38,7 @@ class VisualPromptReferenceRepository:
 
             return True
         except Exception as e:
-            print(f"Failed to save visual prompt reference: {e}")
+            print(f"Failed to save visual prompt references: {e}")
             return False
 
     async def search(
@@ -45,14 +48,15 @@ class VisualPromptReferenceRepository:
     ):
         query = """
             SELECT
-                id,
-                category,
-                participant_count,
-                prompt,
-                embedding <=> %s::vector AS distance
-            FROM prompt_references
+                  id,
+                  category,
+                  participant_count,
+                  prompt,
+                  situation,
+                  1 - (situation_embedding <=> CAST(%s AS vector)) AS similarity
+            FROM visual_prompt_references
             WHERE category = %s
-            ORDER BY embedding <=> %s::vector
+            ORDER BY situation_embedding <=> CAST(%s AS vector)::vector
             LIMIT 1
         """
 
@@ -72,4 +76,5 @@ class VisualPromptReferenceRepository:
             "category": row["category"],
             "participant_count": row["participant_count"],
             "prompt": row["prompt"],
+            "situation": row["situation"],
         }

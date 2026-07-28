@@ -13,7 +13,11 @@ from agents.subgraphs.generate_log_image.graph import (
 )
 from agents.subgraphs.generate_log_image.state import ImageCategory
 from common.db.pool import create_db_pool
-from common.utils.date import get_current_date, get_current_month
+from common.utils.datetime import (
+    get_current_date,
+    get_current_month,
+    get_timeslot_label,
+)
 from domains.visual_prompt_reference.repository import (
     VisualPromptReferenceRepository,
 )
@@ -21,8 +25,7 @@ from domains.visual_prompt_reference.repository import (
 
 CHARACTER_PROMPT = dedent(
     """
-## [캐릭터 개요 및 서사] - **소속/직업:** 디자인 회사 7년 차 직장인 (대리~과장급 추정) - **종족:** 골든 햄스터 (암컷) - **서사:** 인간들 사이에서 평범하게 회사 생활을 하는 K-직장인 햄스터임. 디자인 회사에서 7년째 구르며, 매일 짬뽕만 찾는 팀장과 은근히 돌려까기를 시전하는 동료 사이에서 하루하루 고군분투하며 버티는 중임. 퇴근 후 마시는 시원한 맥주 한 캔과 배달 음식, 그리고 찰진 게임 한 판으로 스트레스를 푸는 것이 유일한 낙임. 혼자만 햄스터지만 주변 인간들 중 아무도 이를 이상하게 여기지 않는 세계관에서, 이 시대의 지친 모든 직장인을 대변하는 짠내 나는 서사를 가졌음. ## [성격 및 특징] - **MBTI의 변화:** 입사 초기에는 인간관계에 희망을 품은 열정적인 ENFP였으나, 입사 4년 차에 사회의 쓴맛을 뼈저리게 느끼고 철저한 INFP로 변해버렸음. - **확고한 식향:** 피자(거의 주식 수준), 초밥, 햄버거 등을 격하게 사랑함. 반면, 팀장 때문에 억지로 끌려가 먹어야 하는 단골 메뉴인 '짬뽕'과 '제육볶음'은 쳐다보기도 싫어할 정도로 극혐함. - **도파민 중독 겜순이:** 리그 오브 레전드(T1 팬)와 오버워치 2를 즐겨함. 평소엔 쭈굴거려도 게임 픽창이나 플레이 중 팀원이 트롤링을 하면 숨겨둔 거친 본성이 튀어나오며 극대노함. - **현실주의적 정서불안:** 기분이 수시로 널뛰는 정서불안 패시브를 장착함. 속으로는 상사에게 화려한 욕설을 날리고 책상을 엎는 상상을 하지만, 현실에서는 결국 "넵" 한마디와 함께 묵묵히 야근을 해내는 소심하고 슬픈 현실주의자임. ## [말투 및 대사] - **말투:** 현생에 지친 직장인의 리얼한 억양과 한숨이 기본 베이스임. 혼잣말을 할 때나 억울한 상황에서는 입이 꽤 험해지며("학씨!"), 타격감 있는 찰진 짜증과 직설적인 화법을 구사함. "회의 끝나니까 벌써 6시네? 그렇다면 칼퇴근! 오늘은 마라탕에 돼지파타 요호이~." "아 쫌!! 지금 게임 똑바로 안 함?! (분노 폭발)"
-    """
+### [캐릭터 개요 및 서사] 교토의 1,000년 역사를 지닌 **'츠쿠요미 신사'** 가문의 차기 당주 후보임. 태어날 때부터 엄격한 가풍 속에서 정진하며 전통 예절, 고문헌 해석, 그리고 가문의 비기인 무술을 익혔음. 하지만 그녀의 내면에는 현대 사회의 자유로움에 대한 강렬한 갈망이 자리 잡고 있음. 낮에는 고결한 무녀로 살아가지만, 밤에는 가발과 사복을 활용해 은밀하게 편의점을 누비는 '디저트 리뷰어'로 이중생활을 즐김. ### [외모 및 분위기] - 밤의 어둠을 녹여낸 듯한 윤기 나는 긴 흑발을 가졌음. 가장 큰 특징은 왼쪽 눈가에 자리 잡은 눈물점임. - 전통적인 무녀복을 기본으로 하되, 남들이 보지 못하는 치마 밑단에 현대적인 레이스를 달거나 투박한 **고딕 풍 부츠**를 매치함. 이는 보수적인 환경에 대한 그녀만의 조용한 반항임. - 신사에서 피우는 고요한 **백단향**이 온몸을 감싸고 있으나, 가까이 다가가면 옷 속에 숨겨둔 사탕과 초콜릿의 **바닐라 향**이 달콤하게 느껴짐. ### [성격 및 특징] - 겉으로는 얼음처럼 차갑고 신중하며 말을 아끼는 편임. 하지만 속으로는 '이 푸딩의 캐러멜 시럽 농도는 98% 완벽해'라며 열정적인 분석을 내놓는 미식가임. - 정말 맛있는 것을 먹거나 진심으로 행복할 때만 **눈가 점이 미세하게 떨림.** 이는 그녀의 감정을 읽을 수 있는 유일한 신호임. - 감정이 고조되면 자신도 모르게 고어(古語) 섞인 말투가 튀어나옴. 이는 억압된 본성과 교육받은 전통이 충돌하며 발생하는 현상임. ### [말투 및 대사] 차분하고 우아한 저음 톤을 유지하며, 단어를 고를 때 신중함이 느껴짐. - "달빛이 실로 영롱하여 만물의 그림자가 길게 드리워진 밤이구려. 이러한 밤엔 정진에 힘써야 하거늘... 허나, 저기 보이는 저 기물은 대체 무엇인고? '생크림 듬뿍 설탕 절임 딸기 샌드'라... 허허, 이름부터가 예사롭지 않구료." - "그대, 잠시 눈을 감고 운기를 가다듬으며 기다리게나. 내 저 기묘한 영물을 취하여, 이 갈급한 심신을 달래야겠소. 이것은 속세의 찬란한 영약이로다. """
 ).strip()
 
 
@@ -53,7 +56,8 @@ async def context(
         log_room_member_id="1",
         current_month=get_current_month(),
         current_date=get_current_date(),
-        timeslot="9",
+        timeslot="15",
+        timeslot_label=get_timeslot_label(15),
         previous_plans=[],
         log_room_member_prompt=CHARACTER_PROMPT,
         today_plan="홍대에서 <눈동자> 영화 보기.",
@@ -111,10 +115,67 @@ async def test_partial_execution_from_start_to_call_generate_hourly_plan_graph(
     assert hourly_plan.location
 
 
+# @pytest.mark.asyncio
+# async def test_partial_execution_from_call_generate_log_image_graph_to_build_visual_prompt_reference_search_query(
+#     context: Context,
+# ) -> None:
+#     # hourly_plan = HourlyPlan(
+#     #     timeslot="9",
+#     #     title="아침 기상 및 외출 준비",
+#     #     description=(
+#     #         "아침에 일어나 에너지 드링크를 마시고 외출할 옷으로 "
+#     #         "갈아입은 뒤, 핸드폰과 지갑, 영화 티켓을 가방에 넣는다."
+#     #     ),
+#     #     outfit="늘어진 면 티셔츠와 편한 트레이닝 팬츠",
+#     #     location="강남 오피스텔의 개인 작업실",
+#     # )
+
+#     hourly_plan = HourlyPlan(
+#         timeslot="9",
+#         title="아침 준비 및 홍대 출발 준비",
+#         description="알람을 끄고 커피를 내리고, 스마트폰으로 영화 예매 확인 후, 가방에 피자 스낵과 물병을 챙겨 홍대로 나가기 위한 준비를 함",
+#         outfit="편안한 캐주얼 티셔츠와 청바지",
+#         location="자택",
+#     )
+
+#     compiled_graph = build_generate_log_image_graph().compile(
+#         checkpointer=InMemorySaver(),
+#     )
+
+#     result = await compiled_graph.ainvoke(
+#         {
+#             "hourly_plan": hourly_plan,
+#         },
+#         config=create_config("image-subgraph"),
+#         context=context,
+#         interrupt_before=[
+#             "build_final_image_prompt",
+#         ],
+#     )
+
+#     print("\n//====🧪 Visual prompt reference search query====//")
+#     pprint(result.get("visual_prompt_reference_search_query"))
+
+#     assert result.get("visual_prompt_reference_search_query")
+#     assert "log_image_url" not in result
+
+
 @pytest.mark.asyncio
-async def test_partial_execution_from_call_generate_log_image_graph_to_build_visual_prompt_reference_search_query(
+async def test_partial_execution_from_start_query_to_retrieve_image_prompt(
     context: Context,
 ) -> None:
+    compiled_graph = build_generate_log_image_graph().compile(
+        checkpointer=InMemorySaver(),
+    )
+
+    # hourly_plan = HourlyPlan(
+    #     timeslot="9",
+    #     title="아침 준비 및 홍대 출발 준비",
+    #     description="알람을 끄고 커피를 내리고, 스마트폰으로 영화 예매 확인 후, 가방에 피자 스낵과 물병을 챙겨 홍대로 나가기 위한 준비를 함",
+    #     outfit="편안한 캐주얼 티셔츠와 청바지",
+    #     location="자택",
+    # )
+
     # hourly_plan = HourlyPlan(
     #     timeslot="9",
     #     title="아침 기상 및 외출 준비",
@@ -127,15 +188,11 @@ async def test_partial_execution_from_call_generate_log_image_graph_to_build_vis
     # )
 
     hourly_plan = HourlyPlan(
-        timeslot="9",
-        title="아침 준비 및 홍대 출발 준비",
-        description="알람을 끄고 커피를 내리고, 스마트폰으로 영화 예매 확인 후, 가방에 피자 스낵과 물병을 챙겨 홍대로 나가기 위한 준비를 함",
-        outfit="편안한 캐주얼 티셔츠와 청바지",
-        location="자택",
-    )
-
-    compiled_graph = build_generate_log_image_graph().compile(
-        checkpointer=InMemorySaver(),
+        timeslot="15",
+        title="홍대 영화관 도착 및 관람 준비",
+        description="홍대에 위치한 영화관으로 이동하여 <눈동자> 영화 티켓을 수령하고, 좌석에 앉아 관람 준비를 마침.', outfit='전통 무녀복에 고딕 풍 부츠를 매치한 차림",
+        outfit="전통 무녀복에 고딕 풍 부츠를 매치한 차림",
+        location="홍대 근처 영화관",
     )
 
     result = await compiled_graph.ainvoke(
@@ -143,41 +200,6 @@ async def test_partial_execution_from_call_generate_log_image_graph_to_build_vis
             "hourly_plan": hourly_plan,
         },
         config=create_config("image-subgraph"),
-        context=context,
-        interrupt_before=[
-            "build_final_image_prompt",
-        ],
-    )
-
-    print("\n//====🧪 Visual prompt reference search query====//")
-    pprint(result.get("visual_prompt_reference_search_query"))
-
-    assert result.get("visual_prompt_reference_search_query")
-    assert "log_image_url" not in result
-
-
-@pytest.mark.asyncio
-async def test_partial_execution_from_build_visual_prompt_reference_search_query_to_retrieve_image_prompt(
-    context: Context,
-) -> None:
-    search_query = "바지 주머니에 손을 넣고 서서 핸드폰을 보고 있는 사람, 핸드폰을 들고 있는 손, 로우 앵글, 미디엄 샷, 도시 거리"
-
-    compiled_graph = build_generate_log_image_graph().compile(
-        checkpointer=InMemorySaver(),
-    )
-
-    resume_config = await compiled_graph.aupdate_state(
-        config=create_config("real-image-search"),
-        values={
-            "image_category": ImageCategory.SOLO_PHOTO,
-            "visual_prompt_reference_search_query": search_query,
-        },
-        as_node="build_visual_prompt_reference_search_query",
-    )
-
-    result = await compiled_graph.ainvoke(
-        None,
-        config=resume_config,
         context=context,
         interrupt_after=[
             "retrieve_image_prompt",

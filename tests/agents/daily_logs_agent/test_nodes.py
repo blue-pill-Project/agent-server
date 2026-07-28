@@ -6,7 +6,7 @@ from agents.subgraphs.generate_hourly_plan.graph import (
     build_generate_hourly_plan_graph,
 )
 from agents.daily_logs_agent.state import Context
-from common.utils.date import (
+from common.utils.datetime import (
     get_current_date,
     get_current_month,
 )
