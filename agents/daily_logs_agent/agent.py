@@ -34,7 +34,6 @@ class DailyLogsAgent(BaseAgent):
         user_id: str,
         log_room_id: str,
         log_room_member_id: str,
-        previous_plans: list,
     ):
 
         current_month = get_current_month()
@@ -46,6 +45,8 @@ class DailyLogsAgent(BaseAgent):
         today_plan = await self._daily_plan_repository.get_today(
             log_room_id, log_room_member_id, current_date
         )
+        # TODO: agent 가 직접 이전 시간대 계획을 조회 (self._hourly_log_repository)
+        previous_plans = []
 
         context = Context(
             user_id=user_id,

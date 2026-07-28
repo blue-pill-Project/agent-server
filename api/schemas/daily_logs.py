@@ -6,7 +6,6 @@ class DailyLogsRequest(BaseModel):
     user_id: str
     log_room_id: str
     log_room_member_id: str
-    previous_plans: list
 
 
 class DailyLogsResponse(BaseModel):

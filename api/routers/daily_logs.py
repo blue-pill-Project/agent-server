@@ -15,10 +15,9 @@ async def run_daily_logs(
     user_id = body.user_id
     log_room_id = body.log_room_id
     log_room_member_id = body.log_room_member_id
-    previous_plans = body.previous_plans
 
     result = await daily_logs_agent.run(
-        timeslot, user_id, log_room_id, log_room_member_id, previous_plans
+        timeslot, user_id, log_room_id, log_room_member_id
     )
 
     return DailyLogsResponse(success=result)
