@@ -19,7 +19,7 @@ def generate_image(state: GraphState, runtime: Runtime[Context]):
     response = requests.post(
         url="https://openrouter.ai/api/v1/images",
         headers={
-            "Authorization": f"Bearer {settings.DATABASE_URL}",
+            "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
             "Content-Type": "application/json",
         },
         data=json.dumps(
