@@ -29,6 +29,7 @@ class ShotSpec(BaseModel):
         description="Reusable filming-style prompt excluding character appearance, costume, props, and specific locations"
     )
 
+
 class VisualPromptReference(BaseModel):
     category: ImagePromptCategory = Field(description="Main category of image")
     participant_count: int = Field(
@@ -43,4 +44,4 @@ class VisualPromptReference(BaseModel):
 class GraphState(TypedDict):
     shot_spec: ShotSpec
     situation: str
-    visual_prompt_reference:VisualPromptReference
+    visual_prompt_reference: VisualPromptReference

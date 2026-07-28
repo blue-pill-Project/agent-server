@@ -2,7 +2,10 @@ import base64
 from agents.visual_prompt_reference.llm import extract_prompt_from_image_llm
 from agents.visual_prompt_reference.state import Context, GraphState, ShotSpec
 from langgraph.runtime import Runtime
-from agents.visual_prompt_reference.prompts import extract_prompt_from_image_instructions
+from agents.visual_prompt_reference.prompts import (
+    extract_prompt_from_image_instructions,
+)
+
 
 def extract_prompt_from_image(
     state: GraphState, runtime: Runtime[Context]

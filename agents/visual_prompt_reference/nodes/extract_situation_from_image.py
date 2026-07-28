@@ -2,7 +2,9 @@ import base64
 from agents.visual_prompt_reference.llm import extract_situation_from_image_llm
 from agents.visual_prompt_reference.state import Context, GraphState
 from langgraph.runtime import Runtime
-from agents.visual_prompt_reference.prompts import extract_situation_from_image_instructions
+from agents.visual_prompt_reference.prompts import (
+    extract_situation_from_image_instructions,
+)
 
 
 def extract_situation_from_image(

@@ -45,7 +45,7 @@ class VisualPromptReferenceAgent(BaseAgent):
             visual_prompt_reference_for_save
         )
 
-        #TODO: 테스트 후 삭제해야함
+        # TODO: 테스트 후 삭제해야함
         print(visual_prompt_reference.situation)
 
         return success
