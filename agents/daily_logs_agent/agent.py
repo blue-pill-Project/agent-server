@@ -47,7 +47,7 @@ class DailyLogsAgent(BaseAgent):
 
         current_month = get_current_month()
         current_date = get_current_date()
-        timeslot_label = get_timeslot_label()
+        timeslot_label = get_timeslot_label(int(timeslot))
         now = get_now()
         log_room_member_prompt = await self._log_room_member_repository.get_prompt(
             user_id, log_room_id, log_room_member_id
