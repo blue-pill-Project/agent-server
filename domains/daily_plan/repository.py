@@ -41,6 +41,15 @@ class DailyPlanRepository:
             "plan": row["plan"],
         }
 
+    async def delete_by_room(self, log_room_id: str) -> None:
+        """방 삭제 시 해당 방의 daily_plans 전체 삭제."""
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    "DELETE FROM daily_plans WHERE log_room_id = %s",
+                    (log_room_id,),
+                )
+
     async def save_all(
         self,
         daily_plans: list[tuple],
