@@ -19,6 +19,7 @@ class DailyPlanRepository:
                 await cursor.execute(
                     """
                     SELECT
+                        daily_plan_id,
                         date,
                         day,
                         plan
@@ -36,6 +37,7 @@ class DailyPlanRepository:
             return None
 
         return {
+            "daily_plan_id": row["daily_plan_id"],
             "date": row["date"],
             "day": row["day"],
             "plan": row["plan"],

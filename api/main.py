@@ -21,6 +21,7 @@ from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository
 from domains.hourly_log.repository import HourlyLogRepository
+from domains.hourly_plan.repository import HourlyPlanRepository
 from common.config import settings
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 
@@ -45,6 +46,7 @@ async def lifespan(app: FastAPI):
         daily_plan_repository = DailyPlanRepository(pool)
         log_room_member_repository = LogRoomMemberRepository(pool)
         hourly_log_repository = HourlyLogRepository(pool)
+        hourly_plan_repository = HourlyPlanRepository(pool)
         visual_prompt_reference_repository = VisualPromptReferenceRepository(pool)
 
         trend_agent = TrendAgent(
@@ -61,6 +63,7 @@ async def lifespan(app: FastAPI):
             log_room_member_repository=log_room_member_repository,
             daily_plan_repository=daily_plan_repository,
             hourly_log_repository=hourly_log_repository,
+            hourly_plan_repository=hourly_plan_repository,
             visual_prompt_reference_repository=visual_prompt_reference_repository,
             store=store,
         )
