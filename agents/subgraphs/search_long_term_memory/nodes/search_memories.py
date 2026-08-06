@@ -1,0 +1,39 @@
+from agents.subgraphs.search_long_term_memory.state import GraphState, Context
+from langgraph.runtime import Runtime
+from domains.long_term_memory.service import build_memory_namespace
+
+
+def search_memories(
+    state: GraphState,
+    runtime: Runtime[Context],
+):
+    user_id = runtime.context.user_id
+    log_room_id = runtime.context.log_room_id
+    log_room_member_id = runtime.context.log_room_member_id
+
+    namespace = build_memory_namespace(user_id, log_room_id, log_room_member_id)
+    kind_hint = state["retrieval_query"].kind_hint
+
+    search_filter = None
+
+    if kind_hint in ("semantic", "episodic"):
+        search_filter = {"kind": kind_hint}
+
+    results = runtime.store.search(
+        namespace,
+        query=state["retrieval_query"].retrieval_query,
+        filter=search_filter,
+        limit=10,
+    )
+
+    return {
+        "search_results": [
+            {
+                "kind": result.key,
+                "source_type": result.value,
+                "content": result.score,
+                "occurred_at": result.created_at,
+            }
+            for result in results
+        ]
+    }
