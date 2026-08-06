@@ -1,9 +1,11 @@
 def build_memory_namespace(
-    context,
+    user_id: str,
+    log_room_id: str,
+    log_room_member_id: str,
 ) -> tuple[str, ...]:
     return (
         "memories",
-        str(context.log_room_id),
-        str(context.log_room_member_id),
-        str(context.user_id),
+        str(user_id),
+        str(log_room_id),
+        str(log_room_member_id),
     )
