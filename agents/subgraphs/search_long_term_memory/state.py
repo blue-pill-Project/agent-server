@@ -45,8 +45,12 @@ class SearchResult(BaseModel):
     content: str
     occurred_at: datetime.date
 
+class RerankedResults(BaseModel):
+    reranked_results: list[SearchResult]
+
 
 class GraphState(TypedDict):
     source: Source
     retrieval_query: RetrievalQuery
     search_results: list[SearchResult] | None
+    reranked_results: list[SearchResult] | None

@@ -1,2 +1,3 @@
 from .build_retrieval_query import build_retrieval_query
 from .search_memories import search_memories
+from .rerank_memories import rerank_memories
