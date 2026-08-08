@@ -1,4 +1,8 @@
-from agents.subgraphs.search_long_term_memory.state import GraphState, Context
+from agents.subgraphs.search_long_term_memory.state import (
+    GraphState,
+    Context,
+    SearchResult,
+)
 from langgraph.runtime import Runtime
 from domains.long_term_memory.service import build_memory_namespace
 
@@ -28,12 +32,11 @@ def search_memories(
 
     return {
         "search_results": [
-            {
-                "kind": result.key,
-                "source_type": result.value,
-                "content": result.score,
-                "occurred_at": result.created_at,
-            }
+            SearchResult(
+                content=result.value["content"],
+                source_type=result.value["source_type"],
+                occurred_at=result.value["occurred_at"],
+            )
             for result in results
         ]
     }

@@ -23,7 +23,7 @@ def build_search_long_term_memory_graph():
     graph.add_node("build_retrieval_query", build_retrieval_query)
     graph.add_node("search_memories", search_memories)
     graph.add_node("rerank_memories", rerank_memories)
-    
+
     graph.add_edge(START, "build_retrieval_query")
 
     graph.add_conditional_edges(
