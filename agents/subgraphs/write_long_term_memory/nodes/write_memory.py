@@ -28,4 +28,4 @@ def write_memory(
             index=["content"],
         )
 
-    return {"success": True}
+    return {"is_saved_long_term_memory": True}

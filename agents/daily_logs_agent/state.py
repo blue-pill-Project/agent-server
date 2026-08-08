@@ -84,3 +84,4 @@ class GraphState(TypedDict):
     log_text: LogText
     hourly_log: HourlyLog
     log_image_url: str
+    is_saved_long_term_memory: bool

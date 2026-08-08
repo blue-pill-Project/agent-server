@@ -43,4 +43,4 @@ class Memories(BaseModel):
 class GraphState(TypedDict):
     memory_source: MemorySource
     memories: Memories
-    success: bool
+    is_saved_long_term_memory: bool
