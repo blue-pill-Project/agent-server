@@ -23,4 +23,5 @@ def extract_memory_candidates(
 
     structured_model = extract_memory_candidates_llm.with_structured_output(Memories)
     response = structured_model.invoke(formatted_prompt)
+    print(f"❤️ 저장된 장기기억: {response.memories}")
     return {"memories": response.memories}

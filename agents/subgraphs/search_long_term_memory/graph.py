@@ -24,11 +24,21 @@ def route_after_build_retrieval_query(
     return "search"
 
 
+# TODO: 이거 롱텀메모리 키에러 안나게 빈값처리 다른 방법 생각해보기
+def set_empty_long_term_memories(
+    state: GraphState,
+) -> dict:
+    return {
+        "final_long_term_memories": [],
+    }
+
+
 def build_search_long_term_memory_graph():
     graph = StateGraph(GraphState)
 
     graph.add_node("build_post_retrieval_query", build_post_retrieval_query)
     graph.add_node("build_chat_retrieval_query", build_chat_retrieval_query)
+    graph.add_node("set_empty_long_term_memories", set_empty_long_term_memories)
     graph.add_node("search_memories", search_memories)
     graph.add_node("rerank_memories", rerank_memories)
 
@@ -46,7 +56,7 @@ def build_search_long_term_memory_graph():
         route_after_build_retrieval_query,
         {
             "search": ("search_memories"),
-            "done": END,
+            "done": "set_empty_long_term_memories",
         },
     )
 
@@ -55,11 +65,12 @@ def build_search_long_term_memory_graph():
         route_after_build_retrieval_query,
         {
             "search": ("search_memories"),
-            "done": END,
+            "done": "set_empty_long_term_memories",
         },
     )
 
     graph.add_edge("search_memories", "rerank_memories")
     graph.add_edge("rerank_memories", END)
+    graph.add_edge("set_empty_long_term_memories", END)
 
     return graph

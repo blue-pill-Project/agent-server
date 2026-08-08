@@ -18,7 +18,7 @@ def rerank_memories(
     )
 
     final_long_term_memories = [result.content for result in results]
-
+    print(f"💙 검색된 장기기억: {final_long_term_memories}")
     return {
         "reranked_results": results,
         "final_long_term_memories": final_long_term_memories,
