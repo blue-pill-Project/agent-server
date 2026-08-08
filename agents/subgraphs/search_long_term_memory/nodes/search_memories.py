@@ -17,7 +17,6 @@ def search_memories(
 
     namespace = build_memory_namespace(user_id, log_room_id, log_room_member_id)
     kind_hint = state["retrieval_query"].kind_hint
-
     search_filter = None
 
     if kind_hint in ("semantic", "episodic"):
@@ -29,7 +28,6 @@ def search_memories(
         filter=search_filter,
         limit=10,
     )
-
     return {
         "search_results": [
             SearchResult(

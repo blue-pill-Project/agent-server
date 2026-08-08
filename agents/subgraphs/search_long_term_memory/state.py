@@ -50,3 +50,4 @@ class GraphState(TypedDict):
     retrieval_query: RetrievalQuery
     search_results: list[SearchResult] | None
     reranked_results: list[dict] | None
+    final_long_term_memories: list[str] | None
