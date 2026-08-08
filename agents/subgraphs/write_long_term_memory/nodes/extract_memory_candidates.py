@@ -23,5 +23,4 @@ def extract_memory_candidates(
 
     structured_model = extract_memory_candidates_llm.with_structured_output(Memories)
     response = structured_model.invoke(formatted_prompt)
-
     return {"memories": response.memories}
