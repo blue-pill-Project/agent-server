@@ -57,7 +57,14 @@ class DailyLogsAgent(BaseAgent):
         today_plan = await self._daily_plan_repository.get_today(
             log_room_id, log_room_member_id, current_date
         )
-        daily_plan_id = today_plan["daily_plan_id"] if today_plan else None
+        # daily_plan 은 hourly_plan/log 생성의 전제. 없으면 로그를 만들지 않고 실패로 종료.
+        if today_plan is None:
+            print(
+                f"daily_plan 없음 - daily-log 중단: room={log_room_id}, "
+                f"member={log_room_member_id}, date={current_date}"
+            )
+            return False
+        daily_plan_id = today_plan["daily_plan_id"]
         # TODO: agent 가 직접 이전 시간대 계획을 조회 (self._hourly_log_repository)
         previous_plans = []
 
@@ -94,20 +101,18 @@ class DailyLogsAgent(BaseAgent):
             now,
         )
 
-        success = await self._hourly_log_repository.save(hourly_log_for_save)
+        log_saved = await self._hourly_log_repository.save(hourly_log_for_save)
 
-        # hourly_plan 저장 (daily_plan 있을 때만. 없으면 FK 대상이 없어 skip)
-        if daily_plan_id is not None:
-            hp = hourly_log.hourly_plan
-            await self._hourly_plan_repository.save(
-                (
-                    daily_plan_id,
-                    int(hp.timeslot),
-                    hp.title,
-                    hp.description,
-                    hp.outfit,
-                    hp.location,
-                )
+        hourly_plan = hourly_log.hourly_plan
+        plan_saved = await self._hourly_plan_repository.save(
+            (
+                daily_plan_id,
+                int(hourly_plan.timeslot),
+                hourly_plan.title,
+                hourly_plan.description,
+                hourly_plan.outfit,
+                hourly_plan.location,
             )
+        )
 
-        return success
+        return log_saved and plan_saved
