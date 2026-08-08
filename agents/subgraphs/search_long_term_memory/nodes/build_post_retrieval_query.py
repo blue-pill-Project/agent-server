@@ -5,16 +5,17 @@ from agents.subgraphs.search_long_term_memory.state import (
     RetrievalQuery,
 )
 from agents.subgraphs.search_long_term_memory.prompts import (
-    build_retrieval_query_instructions,
+    build_post_retrieval_query_instructions,
 )
 from langgraph.runtime import Runtime
 
 
-def build_retrieval_query(
+def build_post_retrieval_query(
     state: GraphState,
     runtime: Runtime[Context],
 ):
-    formatted_prompt = build_retrieval_query_instructions.format(
+    print("📋")
+    formatted_prompt = build_post_retrieval_query_instructions.format(
         now=runtime.context.now,
         source=state["source"].source,
     )
