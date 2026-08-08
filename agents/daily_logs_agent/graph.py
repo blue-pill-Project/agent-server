@@ -123,10 +123,7 @@ async def call_write_long_term_memory_graph(state, runtime: Runtime[Context]):
     )
 
     result = await compiled_write_long_term_memory_graph.ainvoke(
-        {
-            "memory_source": memory_source,
-            "is_saved_long_term_memory":False
-        },
+        {"memory_source": memory_source, "is_saved_long_term_memory": False},
         context=runtime.context,
     )
     is_saved_long_term_memory = result["is_saved_long_term_memory"]
