@@ -13,6 +13,6 @@ def create_db_pool() -> AsyncConnectionPool:
         open=False,
         kwargs={
             "row_factory": dict_row,
-            "autocommit": True, 
+            "autocommit": True,
         },
     )

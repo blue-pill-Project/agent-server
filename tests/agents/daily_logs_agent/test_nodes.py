@@ -59,11 +59,11 @@ def create_context(
         log_room_member_prompt=CHARACTER_PROMPT,
         today_plan="코난 추리게임 체험",
         image_url=(
-            "https://i.pinimg.com/736x/91/5e/0e/"
-            "915e0e09e60665b3b653b7f8d7a30113.jpg"
+            "https://i.pinimg.com/736x/91/5e/0e/915e0e09e60665b3b653b7f8d7a30113.jpg"
         ),
         visual_prompt_reference_repository=repository,
     )
+
 
 @pytest.mark.asyncio
 async def test_generate_hourly_plan() -> None:
@@ -123,7 +123,4 @@ async def test_generate_all_hourly_plans() -> None:
     pprint(generated_plans)
 
     assert len(generated_plans) == 8
-    assert [
-        plan.timeslot
-        for plan in generated_plans
-    ] == TIME_SLOTS
+    assert [plan.timeslot for plan in generated_plans] == TIME_SLOTS
