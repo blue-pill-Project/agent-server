@@ -12,3 +12,6 @@ wheels/
 
 # Generated images
 generated_images/
+
+# Test Results
+tests/agents/daily_logs_agent/results
