@@ -12,3 +12,6 @@ wheels/
 
 # Generated images
 generated_images/
+
+# Test Results
+tests/agents/*/results

@@ -13,6 +13,7 @@ class Context:
     user_id: str
     log_room_id: str
     log_room_member_id: str
+    now: datetime.datetime
     current_month: datetime.date
     current_date: datetime.date
     timeslot: str
@@ -66,6 +67,7 @@ class DayInfo(BaseModel):
 
 
 class GraphState(TypedDict):
+    now: datetime.datetime
     current_month: str
     current_date: datetime.date
     week_dates: list[DayInfo]
@@ -77,8 +79,9 @@ class GraphState(TypedDict):
     today_chat: str
     related_chats: str
     previous_plans: list[HourlyPlan]
-    long_term_memories: NotRequired[list[dict]]
+    long_term_memories: list[str] | None
     hourly_plan: HourlyPlan
     log_text: LogText
     hourly_log: HourlyLog
     log_image_url: str
+    is_saved_long_term_memory: bool

@@ -17,10 +17,7 @@ def generate_hourly_plan(
     previous_plans = runtime.context.previous_plans
     memories = state["long_term_memories"]
 
-    memory_context = "\n".join(
-        f"- {memory.get('data')}" for memory in memories if memory.get("data")
-    )
-
+    memory_context = "\n".join(f"- {memory}" for memory in memories if memories)
     formatted_prompt = generate_hourly_plan_instructions.format(
         log_room_member_prompt=log_room_member_prompt,
         today_plan=today_plan,

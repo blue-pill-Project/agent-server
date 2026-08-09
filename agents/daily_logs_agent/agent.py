@@ -47,7 +47,7 @@ class DailyLogsAgent(BaseAgent):
         log_room_id: str,
         log_room_member_id: str,
     ):
-
+        now = get_now()
         current_month = get_current_month()
         current_date = get_current_date()
         timeslot_label = get_timeslot_label(int(timeslot))
@@ -85,6 +85,7 @@ class DailyLogsAgent(BaseAgent):
             user_id=user_id,
             log_room_id=log_room_id,
             log_room_member_id=log_room_member_id,
+            now=now,
             current_month=current_month,
             current_date=current_date,
             timeslot=timeslot,

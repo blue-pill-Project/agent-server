@@ -5,5 +5,5 @@ from agents.daily_logs_agent.state import HourlyPlan, TimeSlot
 
 
 class GraphState(TypedDict):
-    long_term_memories: NotRequired[list[dict]]
+    long_term_memories: list[str] | None
     hourly_plan: HourlyPlan
