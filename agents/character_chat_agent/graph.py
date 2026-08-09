@@ -3,7 +3,6 @@ from agents.character_chat_agent.nodes import (
     classify_intent,
     generate_reply,
     answer_with_search,
-    answer_with_memory,
     decide_memory_storage,
     store_long_term_memory,
 )
@@ -27,7 +26,6 @@ def build_character_chat_graph():
 
     graph.add_node("classify_intent", classify_intent)
     graph.add_node("answer_with_search", answer_with_search)
-    graph.add_node("answer_with_memory", answer_with_memory)
     graph.add_node("answer_fallback", generate_reply)
     graph.add_node("decide_memory_storage", decide_memory_storage)
     graph.add_node("store_long_term_memory", store_long_term_memory)
@@ -40,13 +38,11 @@ def build_character_chat_graph():
         route_intent,
         {
             "search": "answer_with_search",
-            "memory": "answer_with_memory",
             "other": "answer_fallback",
         },
     )
 
     graph.add_edge("answer_with_search", END)
-    graph.add_edge("answer_with_memory", END)
     graph.add_edge("answer_fallback", END)
 
     graph.add_conditional_edges(
