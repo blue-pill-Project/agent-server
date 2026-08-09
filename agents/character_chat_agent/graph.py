@@ -3,8 +3,6 @@ from agents.character_chat_agent.nodes import (
     classify_intent,
     generate_reply,
     answer_with_search,
-    decide_memory_storage,
-    store_long_term_memory,
 )
 from agents.character_chat_agent.state import GraphState, Context
 from agents.subgraphs.search_long_term_memory.graph import (
@@ -86,7 +84,7 @@ def build_character_chat_graph():
     graph.add_node(
         "call_write_long_term_memory_graph", call_write_long_term_memory_graph
     )
-    
+    # TODO: 코드가 합쳐지면서 이중 메모리 서칭 필요 유무 확인하고있음 수정해야함
     graph.add_edge(START, "classify_intent")
     graph.add_conditional_edges(
         "classify_intent",

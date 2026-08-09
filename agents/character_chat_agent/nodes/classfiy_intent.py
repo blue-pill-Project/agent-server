@@ -11,5 +11,5 @@ def classify_intent(state: GraphState) -> dict:
 
     structured_model = generate_reply_llm.with_structured_output(IntentDecision)
     response = structured_model.invoke(formatted_prompt)
-
+    print(f"💛: {response}")
     return {"intent_decision": response}
