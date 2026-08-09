@@ -41,7 +41,7 @@ class LogRoomMemberRepository:
             "name": row["name"],
             "description": row["description"],
             "prompt": row["prompt"],
-            "example_dialogues": row["example_dialogues"]
+            "example_dialogues": row["example_dialogues"],
         }
 
     # TODO: Logroom Repositiry로 분리해야할듯

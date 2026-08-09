@@ -10,6 +10,7 @@ from common.utils.datetime import (
 )
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.hourly_log.repository import HourlyLogRepository
+from domains.hourly_plan.repository import HourlyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 from langgraph.graph.state import BaseStore
@@ -21,6 +22,7 @@ class DailyLogsAgent(BaseAgent):
         log_room_member_repository: LogRoomMemberRepository,
         daily_plan_repository: DailyPlanRepository,
         hourly_log_repository: HourlyLogRepository,
+        hourly_plan_repository: HourlyPlanRepository,
         visual_prompt_reference_repository: VisualPromptReferenceRepository,
         store: BaseStore,
     ):
@@ -31,6 +33,7 @@ class DailyLogsAgent(BaseAgent):
         self._log_room_member_repository = log_room_member_repository
         self._daily_plan_repository = daily_plan_repository
         self._hourly_log_repository = hourly_log_repository
+        self._hourly_plan_repository = hourly_plan_repository
         self._visual_prompt_reference_repository = visual_prompt_reference_repository
 
     def build_graph(self):
@@ -54,6 +57,14 @@ class DailyLogsAgent(BaseAgent):
         today_plan = await self._daily_plan_repository.get_today(
             log_room_id, log_room_member_id, current_date
         )
+        # daily_plan 은 hourly_plan/log 생성의 전제. 없으면 로그를 만들지 않고 실패로 종료.
+        if today_plan is None:
+            print(
+                f"daily_plan 없음 - daily-log 중단: room={log_room_id}, "
+                f"member={log_room_member_id}, date={current_date}"
+            )
+            return False
+        daily_plan_id = today_plan["daily_plan_id"]
         # TODO: agent 가 직접 이전 시간대 계획을 조회 (self._hourly_log_repository)
         previous_plans = []
 
@@ -90,6 +101,18 @@ class DailyLogsAgent(BaseAgent):
             now,
         )
 
-        success = await self._hourly_log_repository.save(hourly_log_for_save)
+        log_saved = await self._hourly_log_repository.save(hourly_log_for_save)
 
-        return success
+        hourly_plan = hourly_log.hourly_plan
+        plan_saved = await self._hourly_plan_repository.save(
+            (
+                daily_plan_id,
+                int(hourly_plan.timeslot),
+                hourly_plan.title,
+                hourly_plan.description,
+                hourly_plan.outfit,
+                hourly_plan.location,
+            )
+        )
+
+        return log_saved and plan_saved
