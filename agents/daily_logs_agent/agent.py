@@ -13,6 +13,7 @@ from domains.hourly_log.repository import HourlyLogRepository
 from domains.hourly_plan.repository import HourlyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
+from common.config import settings
 from langgraph.graph.state import BaseStore
 
 
@@ -68,6 +69,18 @@ class DailyLogsAgent(BaseAgent):
         # TODO: agent 가 직접 이전 시간대 계획을 조회 (self._hourly_log_repository)
         previous_plans = []
 
+        # 캐릭터 참조 이미지 (R2 공개 URL). 없으면 참조 없이 진행.
+        image_key = await self._log_room_member_repository.get_character_image_key(
+            log_room_member_id
+        )
+        if image_key:
+            image_url = f"{settings.R2_PUBLIC_DOMAIN}/{image_key}"
+        else:
+            image_url = None
+            print(
+                f"캐릭터 참조 이미지 없음 - 참조 없이 생성: member={log_room_member_id}"
+            )
+
         context = Context(
             user_id=user_id,
             log_room_id=log_room_id,
@@ -79,8 +92,7 @@ class DailyLogsAgent(BaseAgent):
             previous_plans=previous_plans,
             log_room_member_prompt=log_room_member_prompt,
             today_plan=today_plan,
-            # NOTE:잠깐 이미지 하드코딩
-            image_url="https://i.pinimg.com/736x/91/5e/0e/915e0e09e60665b3b653b7f8d7a30113.jpg",
+            image_url=image_url,
             visual_prompt_reference_repository=(
                 self._visual_prompt_reference_repository
             ),

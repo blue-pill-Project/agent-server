@@ -16,24 +16,26 @@ def generate_image(state: GraphState, runtime: Runtime[Context]):
     image_prompt = state["image_prompt"]
     image_url = runtime.context.image_url
 
+    payload = {
+        "model": "google/gemini-3.1-flash-lite-image",
+        "prompt": image_prompt,
+    }
+    # 캐릭터 참조 이미지가 있으면 참조로 넘김 (없으면 텍스트만으로 생성)
+    if image_url:
+        payload["input_references"] = [
+            {
+                "type": "image_url",
+                "image_url": {"url": image_url},
+            }
+        ]
+
     response = requests.post(
         url="https://openrouter.ai/api/v1/images",
         headers={
             "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
             "Content-Type": "application/json",
         },
-        data=json.dumps(
-            {
-                "model": "openai/gpt-image-2",
-                "prompt": image_prompt,
-                "input_references": [
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": image_url},
-                    }
-                ],
-            }
-        ),
+        data=json.dumps(payload),
     )
 
     response.raise_for_status()

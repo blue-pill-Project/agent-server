@@ -48,7 +48,7 @@ class VisualPromptReferenceRepository:
     ):
         query = """
             SELECT
-                  id,
+                  visual_prompt_reference_id,
                   category,
                   participant_count,
                   prompt,
@@ -72,7 +72,7 @@ class VisualPromptReferenceRepository:
             return None
 
         return {
-            "id": row["id"],
+            "visual_prompt_reference_id": row["visual_prompt_reference_id"],
             "category": row["category"],
             "participant_count": row["participant_count"],
             "prompt": row["prompt"],
