@@ -1,5 +1,11 @@
 from langgraph.graph import StateGraph, START, END
-from agents.character_chat_agent.nodes import generate_reply
+from agents.character_chat_agent.nodes import (
+    classify_intent,
+    generate_reply,
+    answer_with_search,
+    decide_memory_storage,
+    store_long_term_memory,
+)
 from agents.character_chat_agent.state import GraphState, Context
 from agents.subgraphs.search_long_term_memory.graph import (
     build_search_long_term_memory_graph,
@@ -18,6 +24,8 @@ search_long_term_memory_graph = build_search_long_term_memory_graph()
 compiled_search_long_term_memory_graph = search_long_term_memory_graph.compile()
 compiled_write_long_term_memory_graph = write_long_term_memory_graph.compile()
 
+def route_intent(state):
+    return state["intent_decision"].intent
 
 async def call_search_long_term_memory_graph(state, runtime: Runtime[Context]):
     # TODO: 이게 최선인가?
@@ -33,6 +41,7 @@ async def call_search_long_term_memory_graph(state, runtime: Runtime[Context]):
         },
         context=runtime.context,
     )
+
 
     long_term_memories = result["final_long_term_memories"]
     return {"long_term_memories": long_term_memories}
@@ -68,7 +77,8 @@ def build_character_chat_graph():
         GraphState,
         context_schema=Context,
     )
-
+    graph.add_node("classify_intent", classify_intent)
+    graph.add_node("answer_with_search", answer_with_search)
     graph.add_node("generate_reply", generate_reply)
     graph.add_node(
         "call_search_long_term_memory_graph", call_search_long_term_memory_graph
@@ -76,11 +86,20 @@ def build_character_chat_graph():
     graph.add_node(
         "call_write_long_term_memory_graph", call_write_long_term_memory_graph
     )
-
-    graph.add_edge(START, "call_search_long_term_memory_graph")
+    
+    graph.add_edge(START, "classify_intent")
+    graph.add_conditional_edges(
+        "classify_intent",
+        route_intent,
+        {
+            "memory": "call_search_long_term_memory_graph",
+            "search": "answer_with_search",
+            "other":  "generate_reply",
+        },
+    )
     graph.add_edge("call_search_long_term_memory_graph", "generate_reply")
+    graph.add_edge("answer_with_search", "call_write_long_term_memory_graph")
     graph.add_edge("generate_reply", "call_write_long_term_memory_graph")
-
     graph.add_edge("call_write_long_term_memory_graph", END)
-
+ 
     return graph

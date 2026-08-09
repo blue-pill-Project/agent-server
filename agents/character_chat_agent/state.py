@@ -16,6 +16,9 @@ class Context:
     current_date: datetime.date
     now: datetime.date
 
+class IntentDecision(BaseModel):
+    intent: Literal["search", "memory", "other"]
+    reason: str
 
 class GraphState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
@@ -29,4 +32,7 @@ class GraphState(TypedDict):
     stored_memory_id: str | None
     system_prompt: str
 
+    intent_decision: IntentDecision
+    search_results: list
+    retrieved_memories: list[dict]
     is_saved_long_term_memory: bool
