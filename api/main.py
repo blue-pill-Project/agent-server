@@ -10,6 +10,7 @@ from api.routers import (
     visual_prompt_reference,
     weekly_plan,
     character_chat,
+    log_rooms,
 )
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -20,13 +21,14 @@ from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository
 from domains.hourly_log.repository import HourlyLogRepository
+from domains.hourly_plan.repository import HourlyPlanRepository
 from common.config import settings
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 서버 시작할 떄 환경변수 체크
+    # 서버 시작할 때 환경변수 체크
     settings.validate()
     pool = create_db_pool()
 
@@ -44,6 +46,7 @@ async def lifespan(app: FastAPI):
         daily_plan_repository = DailyPlanRepository(pool)
         log_room_member_repository = LogRoomMemberRepository(pool)
         hourly_log_repository = HourlyLogRepository(pool)
+        hourly_plan_repository = HourlyPlanRepository(pool)
         visual_prompt_reference_repository = VisualPromptReferenceRepository(pool)
 
         trend_agent = TrendAgent(
@@ -60,6 +63,7 @@ async def lifespan(app: FastAPI):
             log_room_member_repository=log_room_member_repository,
             daily_plan_repository=daily_plan_repository,
             hourly_log_repository=hourly_log_repository,
+            hourly_plan_repository=hourly_plan_repository,
             visual_prompt_reference_repository=visual_prompt_reference_repository,
             store=store,
         )
@@ -81,6 +85,9 @@ async def lifespan(app: FastAPI):
         visual_prompt_reference_agent.get_graph()
 
         app.state.db_pool = pool
+        app.state.store = store
+        app.state.checkpointer = checkpointer
+        app.state.daily_plan_repository = daily_plan_repository
         app.state.trend_agent = trend_agent
         app.state.weekly_plan_agent = weekly_plan_agent
         app.state.daily_logs_agent = daily_logs_agent
@@ -101,6 +108,7 @@ app.include_router(weekly_plan.router)
 app.include_router(daily_logs.router)
 app.include_router(character_chat.router)
 app.include_router(visual_prompt_reference.router)
+app.include_router(log_rooms.router)
 
 
 @app.get("/health")

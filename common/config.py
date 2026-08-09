@@ -17,6 +17,7 @@ class Settings:
         self.R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID", "")
         self.R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY", "")
         self.R2_SECRET_KEY = os.getenv("R2_SECRET_KEY", "")
+        self.R2_PUBLIC_DOMAIN = os.getenv("R2_PUBLIC_DOMAIN", "")
 
     def validate(self) -> None:
         required_settings = {

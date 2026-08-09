@@ -14,7 +14,9 @@ generate_hourly_plan_instructions = """
         {today_plan}
         다음은 오늘 이전 시간대에 이미 만들어진 계획들입니다.
         {previous_plans}
-        다음은 과거 채팅에서 가져온 관련 내용입니다.
+        다음은 계획을 만들때 연관된 장기기억입니다. (필요한것만 사용하세요)
+        <memories>
         {memory_context}
+        <memories>
         위 맥락을 바탕으로 {timeslot}시 한 시간대의 계획만 생성해주세요.
 """

@@ -41,8 +41,27 @@ class LogRoomMemberRepository:
             "name": row["name"],
             "description": row["description"],
             "prompt": row["prompt"],
-            "example_dialogues": row["example_dialogues"]
+            "example_dialogues": row["example_dialogues"],
         }
+
+    async def get_character_image_key(
+        self,
+        log_room_member_id: int,
+    ) -> str | None:
+        query = """
+            SELECT cs.image_url
+            FROM log_room_members lrm
+            JOIN character_snapshots cs ON cs.snapshot_id = lrm.snapshot_id
+            WHERE lrm.log_room_member_id = %s
+            LIMIT 1
+        """
+
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(query, (log_room_member_id,))
+                row = await cursor.fetchone()
+
+        return row["image_url"] if row else None
 
     # TODO: Logroom Repositiry로 분리해야할듯
     async def get_relationship(
