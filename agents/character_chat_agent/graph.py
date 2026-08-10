@@ -22,8 +22,10 @@ search_long_term_memory_graph = build_search_long_term_memory_graph()
 compiled_search_long_term_memory_graph = search_long_term_memory_graph.compile()
 compiled_write_long_term_memory_graph = write_long_term_memory_graph.compile()
 
+
 def route_intent(state):
     return state["intent_decision"].intent
+
 
 async def call_search_long_term_memory_graph(state, runtime: Runtime[Context]):
     # TODO: 이게 최선인가?
@@ -39,7 +41,6 @@ async def call_search_long_term_memory_graph(state, runtime: Runtime[Context]):
         },
         context=runtime.context,
     )
-
 
     long_term_memories = result["final_long_term_memories"]
     return {"long_term_memories": long_term_memories}
@@ -92,12 +93,12 @@ def build_character_chat_graph():
         {
             "memory": "call_search_long_term_memory_graph",
             "search": "answer_with_search",
-            "other":  "generate_reply",
+            "other": "generate_reply",
         },
     )
     graph.add_edge("call_search_long_term_memory_graph", "generate_reply")
     graph.add_edge("answer_with_search", "call_write_long_term_memory_graph")
     graph.add_edge("generate_reply", "call_write_long_term_memory_graph")
     graph.add_edge("call_write_long_term_memory_graph", END)
- 
+
     return graph

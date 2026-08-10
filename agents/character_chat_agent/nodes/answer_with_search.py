@@ -14,7 +14,9 @@ def answer_with_search(state: GraphState, runtime: Runtime[Context]) -> dict:
     query = state["messages"][-1].content
 
     enc_text = urllib.parse.quote(query)
-    url = f"https://openapi.naver.com/v1/search/blog?query={enc_text}&display=5&sort=sim"
+    url = (
+        f"https://openapi.naver.com/v1/search/blog?query={enc_text}&display=5&sort=sim"
+    )
 
     request = urllib.request.Request(url)
     request.add_header("X-Naver-Client-Id", settings.NAVER_CLIENT_ID)

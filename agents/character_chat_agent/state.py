@@ -16,9 +16,11 @@ class Context:
     current_date: datetime.date
     now: datetime.date
 
+
 class IntentDecision(BaseModel):
     intent: Literal["search", "memory", "other"]
     reason: str
+
 
 class GraphState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]

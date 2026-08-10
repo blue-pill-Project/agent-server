@@ -72,7 +72,7 @@ def search_long_term_memory_report() -> Iterator[list[dict[str, Any]]]:
             print(f"error    : {result.get('error')}")
             continue
 
-        #TODO: 결과 프린팅 수정해야함...
+        # TODO: 결과 프린팅 수정해야함...
         # retrieval_query = result["retrieval_query"]
         # search_results = result["search_results"]
         # reranked_results = result["reranked_results"]

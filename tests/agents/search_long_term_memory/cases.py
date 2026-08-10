@@ -8,6 +8,7 @@ class SearchLongTermCase:
     purpose: Literal["chat", "post"]
     source: str
 
+
 SEARCH_LONG_TERM_CASES = [
     SearchLongTermCase(
         id="greeting",
