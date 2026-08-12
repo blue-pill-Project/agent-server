@@ -54,7 +54,7 @@ class CharacterChatAgent(BaseAgent):
                         "role": "user",
                         "content": content,
                     }
-                ]
+                ],
             },
             config={
                 "configurable": {

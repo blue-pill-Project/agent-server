@@ -18,7 +18,8 @@ class Context:
 
 
 class IntentDecision(BaseModel):
-    intent: Literal["search", "memory", "other"]
+    intent: Literal["GENERAL_CHAT", "ACCEPT_REQUEST", "REFUSE_REQUEST"]
+    request_summary: str
     reason: str
 
 
@@ -33,7 +34,7 @@ class GraphState(TypedDict):
 
     stored_memory_id: str | None
     system_prompt: str
-
+    chat_rule: str
     intent_decision: IntentDecision
     search_results: list
     retrieved_memories: list[dict]
