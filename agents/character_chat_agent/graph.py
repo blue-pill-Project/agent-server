@@ -23,8 +23,16 @@ compiled_search_long_term_memory_graph = search_long_term_memory_graph.compile()
 compiled_write_long_term_memory_graph = write_long_term_memory_graph.compile()
 
 
-def route_intent(state):
-    return state["intent_decision"].intent
+def route_after_intent(
+    state: GraphState,
+) -> str:
+    if (
+        state["intent_decision"].intent == "GENERAL_CHAT"
+        or state["intent_decision"].intent == "REFUSE_REQUEST"
+    ):
+        return "other"
+
+    return "search"
 
 
 async def call_search_long_term_memory_graph(state, runtime: Runtime[Context]):
@@ -87,11 +95,11 @@ def build_character_chat_graph():
     )
     # TODO: 코드가 합쳐지면서 이중 메모리 서칭 필요 유무 확인하고있음 수정해야함
     graph.add_edge(START, "classify_intent")
+    graph.add_edge(START, "call_search_long_term_memory_graph")
     graph.add_conditional_edges(
         "classify_intent",
-        route_intent,
+        route_after_intent,
         {
-            "memory": "call_search_long_term_memory_graph",
             "search": "answer_with_search",
             "other": "generate_reply",
         },
