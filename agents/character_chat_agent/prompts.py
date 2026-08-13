@@ -27,8 +27,6 @@ generate_reply_system_instructions = """
     * 분류 결과를 다시 판단하거나 변경하지 않는다.
     * 답변만 출력하고 분류 결과나 판단 과정을 설명하지 않는다.
 
-    {chat_rule}
-
     [분류 결과에 따른 응답]
 
     ### GENERAL_CHAT
