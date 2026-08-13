@@ -32,3 +32,28 @@ class HourlyPlanRepository:
         except Exception as e:
             print(f"Failed to save hourly_plan: {e}")
             return False
+
+    async def get_by_today_after_six(
+        self,
+    ) -> list[dict]:
+        query = """
+                SELECT
+                    timeslot,
+                    title,
+                    description,
+                    outfit,
+                    location
+                FROM hourly_plans
+                WHERE created_at >= CURRENT_DATE + INTERVAL '5 hours'  
+                AND created_at < CURRENT_TIMESTAMP;             
+            """
+
+        async with self._pool.connection() as conn:
+            async with conn.cursor() as cursor:
+                await cursor.execute(
+                    query,
+                )
+
+                rows = await cursor.fetchall()
+
+        return [dict(row) for row in rows]
