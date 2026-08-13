@@ -40,7 +40,9 @@ async def test_character_chat_graph(
 
     report_item: dict[str, Any] = {
         "case_id": case.id,
+        "name": case.name,
         "content": case.content,
+        "relationship": case.relationship,
         "status": "failed",
     }
 
@@ -54,6 +56,7 @@ async def test_character_chat_graph(
                     }
                 ],
                 "long_term_memories": [],
+                "chat_rule": case.chat_rule,
             },
             config=create_config(case.id),
             context=context,
@@ -65,7 +68,7 @@ async def test_character_chat_graph(
             {
                 "status": "passed",
                 "long_term_memories": result.get("long_term_memories") or [],
-                "reply": result["messages"][-1],
+                "reply": result["messages"][-1].content,
             }
         )
 
