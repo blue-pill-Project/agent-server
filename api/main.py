@@ -4,6 +4,7 @@ from agents.weekly_plan_agent.agent import WeeklyPlanAgent
 from agents.daily_logs_agent.agent import DailyLogsAgent
 from agents.character_chat_agent.agent import CharacterChatAgent
 from agents.trend_agent.agent import TrendAgent
+from agents.character_prompt_agent.agent import CharacterPromptAgent
 from api.routers import (
     daily_logs,
     trend,
@@ -11,6 +12,7 @@ from api.routers import (
     weekly_plan,
     character_chat,
     log_rooms,
+    character_prompt,
 )
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -78,11 +80,14 @@ async def lifespan(app: FastAPI):
             visual_prompt_reference_repository=visual_prompt_reference_repository,
         )
 
+        character_prompt_agent = CharacterPromptAgent()
+
         trend_agent.get_graph()
         weekly_plan_agent.get_graph()
         daily_logs_agent.get_graph()
         character_chat_agent.get_graph()
         visual_prompt_reference_agent.get_graph()
+        character_prompt_agent.get_graph()
 
         app.state.db_pool = pool
         app.state.store = store
@@ -93,6 +98,7 @@ async def lifespan(app: FastAPI):
         app.state.daily_logs_agent = daily_logs_agent
         app.state.character_chat_agent = character_chat_agent
         app.state.visual_prompt_reference_agent = visual_prompt_reference_agent
+        app.state.character_prompt_agent = character_prompt_agent
 
         yield
 
@@ -109,6 +115,7 @@ app.include_router(daily_logs.router)
 app.include_router(character_chat.router)
 app.include_router(visual_prompt_reference.router)
 app.include_router(log_rooms.router)
+app.include_router(character_prompt.router)
 
 
 @app.get("/health")
