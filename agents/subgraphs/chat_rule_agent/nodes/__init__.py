@@ -1,0 +1,1 @@
+from .generate_chat_rule import generate_chat_rule as generate_chat_rule
