@@ -66,9 +66,8 @@ class DailyLogsAgent(BaseAgent):
             )
             return False
         daily_plan_id = today_plan["daily_plan_id"]
-        # TODO: agent 가 직접 이전 시간대 계획을 조회 (self._hourly_log_repository)
-        previous_plans = []
-
+        # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후 
+        previous_plans = await self._hourly_plan_repository.get_by_today_after_six()
         # 캐릭터 참조 이미지 (R2 공개 URL). 없으면 참조 없이 진행.
         image_key = await self._log_room_member_repository.get_character_image_key(
             log_room_member_id
