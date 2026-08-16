@@ -4,14 +4,21 @@ from common.llm.models import Models
 
 classify_image_category_llm = get_llm(
     LLMConfig(
-        model=Models.GEMINI_LATEST,
+        model=Models.GEMINI_FLASH_LITE,
+        temperature=0.7,
+    )
+)
+
+build_visual_prompt_reference_search_query_llm = get_llm(
+    LLMConfig(
+        model=Models.GEMINI_FLASH_LITE,
         temperature=0.7,
     )
 )
 
 build_final_image_prompt_llm = get_llm(
     LLMConfig(
-        model=Models.GEMINI_LATEST,
+        model=Models.GEMINI_FLASH_LITE,
         temperature=0.7,
     )
 )

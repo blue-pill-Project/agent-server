@@ -17,6 +17,7 @@ class Settings:
         self.R2_ACCOUNT_ID = os.getenv("R2_ACCOUNT_ID", "")
         self.R2_ACCESS_KEY = os.getenv("R2_ACCESS_KEY", "")
         self.R2_SECRET_KEY = os.getenv("R2_SECRET_KEY", "")
+        self.R2_PUBLIC_DOMAIN = os.getenv("R2_PUBLIC_DOMAIN", "")
 
     def validate(self) -> None:
         required_settings = {
@@ -24,18 +25,10 @@ class Settings:
             "OPENROUTER_API_KEY": self.OPENROUTER_API_KEY,
         }
 
-        missing = [
-            name
-            for name, value in required_settings.items()
-            if not value
-        ]
+        missing = [name for name, value in required_settings.items() if not value]
 
         if missing:
-            raise RuntimeError(
-                "필수 환경변수가 없습니다: "
-                + ", ".join(missing)
-            )
+            raise RuntimeError("필수 환경변수가 없습니다: " + ", ".join(missing))
+
 
 settings = Settings()
-
-

@@ -1,7 +1,7 @@
 from agents.base import BaseAgent
 from agents.trend_agent.graph import build_trend_graph
 from agents.trend_agent.state import Context
-from common.utils.date import get_current_month
+from common.utils.datetime import get_current_month
 from domains.trend.repository import TrendRepository
 
 

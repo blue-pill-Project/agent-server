@@ -9,3 +9,10 @@ wheels/
 # Virtual environments
 .venv
 .env
+.env.docker
+
+# Generated images
+generated_images/
+
+# Test Results
+tests/agents/*/results

@@ -3,6 +3,7 @@ import boto3
 from botocore.config import Config
 from common.config import settings
 
+
 def get_r2_client():
     return boto3.client(
         "s3",
