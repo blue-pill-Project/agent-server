@@ -1,0 +1,30 @@
+# Git
+.git
+.github
+.gitignore
+
+.env
+.env.*
+!.env.example
+.venv
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# test
+tests/
+generated_images/
+
+
+.DS_Store
+.idea/
+.vscode/
