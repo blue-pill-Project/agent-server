@@ -14,7 +14,7 @@ class RerankedDocument:
 class BgeReranker:
     def __init__(
         self,
-        model_name: str = "BAAI/bge-reranker-v2-m3",
+        model_name: str = "skygudanr/klue-roberta-small-cross-encoder",
         max_length: int = 512,
     ) -> None:
         self.model = CrossEncoder(
