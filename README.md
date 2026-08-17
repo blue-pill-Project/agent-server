@@ -305,7 +305,7 @@ HTTP 요청을 받아 에이전트를 실행하는 진입점입니다.
 - `OPENROUTER_API_KEY`
   - LLM 호출에 필요
 
-- `DATABASE_URL`
+- `DB_URL`
   - PostgreSQL 연결 정보
 
 ## 9. 로컬 실행 방법

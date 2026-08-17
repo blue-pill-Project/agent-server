@@ -6,7 +6,7 @@ from common.config import settings
 
 def create_db_pool() -> AsyncConnectionPool:
     return AsyncConnectionPool(
-        conninfo=settings.DATABASE_URL,
+        conninfo=settings.DB_URL,
         min_size=2,
         max_size=10,
         timeout=10,
