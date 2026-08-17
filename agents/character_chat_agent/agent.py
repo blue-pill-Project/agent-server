@@ -2,6 +2,7 @@ from agents.base import BaseAgent
 from agents.character_chat_agent.graph import build_character_chat_graph
 from agents.character_chat_agent.state import Context
 from common.utils.datetime import get_current_date, get_now
+from common.utils.reranker import BgeReranker
 from domains.log_room_member.repository import LogRoomMemberRepository
 from langgraph.graph.state import BaseStore
 from langgraph.checkpoint.base import BaseCheckpointSaver
@@ -13,12 +14,13 @@ class CharacterChatAgent(BaseAgent):
         log_room_member_repository: LogRoomMemberRepository,
         store: BaseStore,
         checkpointer: BaseCheckpointSaver,
+        reranker: BgeReranker,
     ):
         super().__init__(
             store=store,
             checkpointer=checkpointer,
         )
-
+        self._reranker = reranker
         self._log_room_member_repository = log_room_member_repository
 
     def build_graph(self):
@@ -45,6 +47,7 @@ class CharacterChatAgent(BaseAgent):
             now=now,
             log_room_member_prompt=log_room_member_prompt,
             log_room_relationships=log_room_relationships,
+            reranker=self._reranker,
         )
 
         state = await self.invoke(

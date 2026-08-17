@@ -7,9 +7,7 @@ def rerank_memories(
     state: GraphState,
     runtime: Runtime[Context],
 ):
-
-    # TODO: agent에서 주입으로 빼야할듯
-    reranker = BgeReranker()
+    reranker = runtime.context.reranker
 
     results = reranker.rerank(
         query=state["retrieval_query"].retrieval_query,
