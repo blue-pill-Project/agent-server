@@ -23,6 +23,7 @@ class Context:
     today_plan: str
     image_url: str
     visual_prompt_reference_repository: Any
+    reranker: Any
 
 
 class HourlyPlan(BaseModel):
