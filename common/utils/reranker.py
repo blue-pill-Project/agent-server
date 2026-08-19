@@ -48,6 +48,7 @@ class BgeReranker:
             pairs,
             batch_size=8,
             show_progress_bar=False,
+            processing_kwargs={"text": {"return_token_type_ids": False}},
         )
 
         results = [
