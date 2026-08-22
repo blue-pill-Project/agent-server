@@ -69,8 +69,9 @@ async def call_generate_log_image_graph(state, runtime: Runtime[Context]):
     )
 
     log_image_url = result["log_image_url"]
+    image_prompt = result["image_prompt"]
 
-    return {"log_image_url": log_image_url}
+    return {"log_image_url": log_image_url, "image_prompt": image_prompt}
 
 
 async def call_generate_log_text_graph(state, runtime: Runtime[Context]):

@@ -88,6 +88,9 @@ async def test_daily_logs_graph(
                 "hourly_log": hourly_log.model_dump(mode="json"),
                 "long_term_memories": result.get("long_term_memories") or [],
                 "related_chats": result.get("related_chats") or "",
+                "hourly_plan_description": result["hourly_plan"].description,
+                "image_reference": result.get("image_reference"),
+                "image_prompt": result.get("image_prompt"),
                 "is_saved_long_term_memory": result.get("is_saved_long_term_memory"),
             }
         )

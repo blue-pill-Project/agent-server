@@ -17,6 +17,7 @@ from common.utils.datetime import (
     get_now,
     get_timeslot_label,
 )
+from common.utils.reranker import BgeReranker
 from domains.visual_prompt_reference.repository import (
     VisualPromptReferenceRepository,
 )
@@ -88,6 +89,7 @@ def context_factory(
             today_plan=case.today_plan,
             image_url=TEST_IMAGE_URL,
             visual_prompt_reference_repository=visual_prompt_reference_repository,
+            reranker=BgeReranker(),
         )
 
     return create_context
