@@ -88,5 +88,5 @@ class GraphState(TypedDict):
     log_image_url: str
     is_saved_long_term_memory: bool
     image_reference: dict
-    image_reference_prompt: str
+    image_reference_image_url: str
     visual_prompt_reference_search_query: str
