@@ -9,7 +9,7 @@ classify_image_category_llm = get_llm(
     )
 )
 
-build_visual_prompt_reference_search_query_llm = get_llm(
+build_visual_scene_llm = get_llm(
     LLMConfig(
         model="openai/gpt-5.6-luna",
         temperature=0.7,

@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
 from agents.subgraphs.generate_log_image.nodes import (
-    build_visual_prompt_reference_search_query,
+    build_visual_scene,
     # classify_image_category,
     generate_image,
     build_final_image_prompt,
@@ -20,16 +20,16 @@ def build_generate_log_image_graph() -> StateGraph:
         "retrieve_visual_prompt_references", retrieve_visual_prompt_references
     )
     graph.add_node(
-        "build_visual_prompt_reference_search_query",
-        build_visual_prompt_reference_search_query,
+        "build_visual_scene",
+        build_visual_scene,
     )
     graph.add_node("rerank_visual_prompt_references", rerank_visual_prompt_references)
     graph.add_node("build_final_image_prompt", build_final_image_prompt)
     graph.add_node("generate_image", generate_image)
 
-    graph.add_edge(START, "build_visual_prompt_reference_search_query")
+    graph.add_edge(START, "build_visual_scene")
     graph.add_edge(
-        "build_visual_prompt_reference_search_query",
+        "build_visual_scene",
         "retrieve_visual_prompt_references",
     )
     graph.add_edge(

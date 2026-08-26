@@ -30,4 +30,4 @@ class GraphState(TypedDict):
     image_references: list[dict]
     image_reference: dict
     image_reference_image_url: str
-    visual_prompt_reference_search_query: str
+    visual_scene: str

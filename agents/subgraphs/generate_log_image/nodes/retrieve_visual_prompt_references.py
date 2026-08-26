@@ -9,12 +9,12 @@ async def retrieve_visual_prompt_references(
     state: GraphState, runtime: Runtime[Context]
 ):
     repository = runtime.context.visual_prompt_reference_repository
-    visual_prompt_reference_search_query = state["visual_prompt_reference_search_query"]
+    visual_scene = state["visual_scene"]
     # TODO: 나중에 이미지 SOLO 말고 다른 종류의 사진도 검색해서 제네레이션 가능해야함
     category = ImageCategory.SOLO_PHOTO
-    embedding = embed_text(f"{visual_prompt_reference_search_query}")
+    embedding = embed_text(f"{visual_scene}")
 
-    print(visual_prompt_reference_search_query)
+    print(visual_scene)
 
     references = await repository.search(
         category=category,

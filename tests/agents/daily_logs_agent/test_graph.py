@@ -93,8 +93,8 @@ async def test_daily_logs_graph(
                 "image_reference_image_url": result.get("image_reference_image_url"),
                 "image_prompt": result.get("image_prompt"),
                 "is_saved_long_term_memory": result.get("is_saved_long_term_memory"),
-                "visual_prompt_reference_search_query": result.get(
-                    "visual_prompt_reference_search_query"
+                "visual_scene": result.get(
+                    "visual_scene"
                 ),
             }
         )
