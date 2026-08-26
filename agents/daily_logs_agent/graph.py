@@ -70,8 +70,19 @@ async def call_generate_log_image_graph(state, runtime: Runtime[Context]):
 
     log_image_url = result["log_image_url"]
     image_prompt = result["image_prompt"]
+    image_reference = result["image_reference"]
+    image_reference_prompt = result["image_reference_prompt"]
+    visual_prompt_reference_search_query = result[
+        "visual_prompt_reference_search_query"
+    ]
 
-    return {"log_image_url": log_image_url, "image_prompt": image_prompt}
+    return {
+        "log_image_url": log_image_url,
+        "image_prompt": image_prompt,
+        "image_reference": image_reference,
+        "image_reference_prompt": image_reference_prompt,
+        "visual_prompt_reference_search_query": visual_prompt_reference_search_query,
+    }
 
 
 async def call_generate_log_text_graph(state, runtime: Runtime[Context]):

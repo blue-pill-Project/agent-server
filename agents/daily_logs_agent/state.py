@@ -87,4 +87,6 @@ class GraphState(TypedDict):
     hourly_log: HourlyLog
     log_image_url: str
     is_saved_long_term_memory: bool
-
+    image_reference: dict
+    image_reference_prompt: str
+    visual_prompt_reference_search_query: str

@@ -90,8 +90,12 @@ async def test_daily_logs_graph(
                 "related_chats": result.get("related_chats") or "",
                 "hourly_plan_description": result["hourly_plan"].description,
                 "image_reference": result.get("image_reference"),
+                "image_reference_prompt": result.get("image_reference_prompt"),
                 "image_prompt": result.get("image_prompt"),
                 "is_saved_long_term_memory": result.get("is_saved_long_term_memory"),
+                "visual_prompt_reference_search_query": result.get(
+                    "visual_prompt_reference_search_query"
+                ),
             }
         )
 
