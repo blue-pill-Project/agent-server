@@ -21,6 +21,8 @@ async def run_visual_prompt_reference(
     request: Request,
     image: Annotated[UploadFile, File()],
 ):
+
+    # TODO: 이미지 받는거 수정해야할듯
     if image.content_type not in ALLOWED_IMAGE_TYPES:
         raise HTTPException(
             status_code=415,

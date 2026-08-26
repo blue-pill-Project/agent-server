@@ -21,7 +21,7 @@ class VisualPromptReferenceRepository:
             INSERT INTO visual_prompt_references (
                 category,
                 participant_count,
-                prompt,
+                image_url,
                 situation,
                 situation_embedding
             )
@@ -47,7 +47,7 @@ class VisualPromptReferenceRepository:
                   visual_prompt_reference_id,
                   category,
                   participant_count,
-                  prompt,
+                  image_url,
                   situation,
                   1 - (situation_embedding <=> CAST(%s AS vector)) AS similarity
             FROM visual_prompt_references
@@ -65,11 +65,3 @@ class VisualPromptReferenceRepository:
                 rows = await cursor.fetchall()
 
         return [dict(row) for row in rows]
-
-        # return {
-        #     "visual_prompt_reference_id": row["visual_prompt_reference_id"],
-        #     "category": row["category"],
-        #     "participant_count": row["participant_count"],
-        #     "prompt": row["prompt"],
-        #     "situation": row["situation"],
-        # }
