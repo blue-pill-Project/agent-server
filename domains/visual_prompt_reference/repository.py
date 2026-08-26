@@ -41,11 +41,7 @@ class VisualPromptReferenceRepository:
             print(f"Failed to save visual prompt references: {e}")
             return False
 
-    async def search(
-        self,
-        category: str,
-        query_vector: list[float],
-    ):
+    async def search(self, category: str, query_vector: list[float], limit: int):
         query = """
             SELECT
                   visual_prompt_reference_id,
@@ -57,24 +53,23 @@ class VisualPromptReferenceRepository:
             FROM visual_prompt_references
             WHERE category = %s
             ORDER BY situation_embedding <=> CAST(%s AS vector)::vector
-            LIMIT 1
+            LIMIT %s
         """
 
         async with self._pool.connection() as conn:
             async with conn.cursor() as cursor:
                 await cursor.execute(
                     query,
-                    (query_vector, category, query_vector),
+                    (query_vector, category, query_vector, limit),
                 )
-                row = await cursor.fetchone()
+                rows = await cursor.fetchall()
 
-        if row is None:
-            return None
+        return [dict(row) for row in rows]
 
-        return {
-            "visual_prompt_reference_id": row["visual_prompt_reference_id"],
-            "category": row["category"],
-            "participant_count": row["participant_count"],
-            "prompt": row["prompt"],
-            "situation": row["situation"],
-        }
+        # return {
+        #     "visual_prompt_reference_id": row["visual_prompt_reference_id"],
+        #     "category": row["category"],
+        #     "participant_count": row["participant_count"],
+        #     "prompt": row["prompt"],
+        #     "situation": row["situation"],
+        # }
