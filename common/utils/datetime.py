@@ -28,11 +28,11 @@ def get_now():
 
 
 def get_current_date():
-    return date.today()
+    return datetime.now(ZoneInfo("Asia/Seoul")).date()
 
 
 def get_current_month():
-    return date.today().replace(day=1)
+    return datetime.now(ZoneInfo("Asia/Seoul")).date().replace(day=1)
 
 
 def add_days(target_date: date, days: int) -> date:
