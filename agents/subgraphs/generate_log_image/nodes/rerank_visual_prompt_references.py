@@ -9,23 +9,19 @@ from common.config import settings
 async def rerank_visual_prompt_references(state: GraphState, runtime: Runtime[Context]):
     image_references = state["image_references"]
     visual_scene = state["visual_scene"]
-
     reranker = runtime.context.reranker
 
-    results = reranker.rerank(
+    reranked_results = reranker.rerank(
         query=visual_scene,
-        documents=[ref["situation"] for ref in image_references],
+        documents=[reference["situation"] for reference in image_references],
         top_k=3,
     )
 
-    best_result = results[0]
+    # 리랭킹된 결과중 가장 적합한 결과 선택
+    best_result = reranked_results[0]
+    best_image_reference = image_references[best_result.original_index]
 
-    best_reference = image_references[best_result.original_index]
-
-    image_reference_image_url = (
-        f"{settings.R2_PUBLIC_DOMAIN}/{best_reference['image_url']}"
-    )
     return {
-        "image_reference": results[0],
-        "image_reference_image_url": image_reference_image_url,
+        "image_reference": best_image_reference,
+        "image_reference_image_url": f"{settings.R2_PUBLIC_DOMAIN}/{best_image_reference['image_url']}",
     }

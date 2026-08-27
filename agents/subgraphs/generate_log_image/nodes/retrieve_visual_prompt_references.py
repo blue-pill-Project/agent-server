@@ -4,6 +4,8 @@ from agents.subgraphs.generate_log_image.state import GraphState, ImageCategory
 from langgraph.runtime import Runtime
 from agents.daily_logs_agent.state import Context
 
+SIMILARITY_THRESHOLD = 0.5
+
 
 async def retrieve_visual_prompt_references(
     state: GraphState, runtime: Runtime[Context]
@@ -14,14 +16,25 @@ async def retrieve_visual_prompt_references(
     category = ImageCategory.SOLO_PHOTO
     embedding = embed_text(f"{visual_scene}")
 
-    print(visual_scene)
-
     references = await repository.search(
         category=category,
         query_vector=embedding,
         limit=5,
     )
+    # 유사도 검사
+    # SIMILARITY_THRESHOLD를 넘지 못하면 기본 셀카로 진행
+    has_relevant_reference = (
+        references and references[0]["similarity"] >= SIMILARITY_THRESHOLD
+    )
+    print(f"🔢: {references[0]['similarity']}")
 
-    pprint.pprint(references, indent=2, width=60)
+    if not has_relevant_reference:
+        return {
+            "use_default_reference": True,
+            "image_references": [],
+        }
 
-    return {"image_references": references}
+    return {
+        "use_default_reference": False,
+        "image_references": references,
+    }

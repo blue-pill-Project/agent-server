@@ -2,7 +2,8 @@ from typing import Any
 from psycopg_pool import AsyncConnectionPool
 from agents.visual_prompt_reference.state import VisualPromptReferenceForSave
 
-#TODO: 예외를 처리해야함 지금 반환값 예외 처리 다 제각각임
+
+# TODO: 예외를 처리해야함 지금 반환값 예외 처리 다 제각각임
 class VisualPromptReferenceRepository:
     """
     Visual Prompt Reference의 저장 및 조회를 담당한다.
@@ -71,7 +72,9 @@ class VisualPromptReferenceRepository:
             print(f"Failed to save visual prompt reference: {e}")
             return False
 
-    async def search(self, category: str, query_vector: list[float], limit: int)-> list[dict[str, Any]]:
+    async def search(
+        self, category: str, query_vector: list[float], limit: int
+    ) -> list[dict[str, Any]]:
         """
         카테고리와 벡터 유사도를 기준으로 레퍼런스를 검색한다.
 
@@ -113,7 +116,7 @@ class VisualPromptReferenceRepository:
 
         return [dict(row) for row in rows]
 
-    async def get_random_default_selfie(self)-> dict[str, Any] | None:
+    async def get_random_default_selfie(self) -> dict[str, Any] | None:
         """
         기본 셀피 레퍼런스 중 하나를 무작위로 조회한다.
 

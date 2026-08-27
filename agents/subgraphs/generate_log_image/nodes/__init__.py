@@ -7,3 +7,6 @@ from .retrieve_visual_prompt_references import retrieve_visual_prompt_references
 from .rerank_visual_prompt_references import rerank_visual_prompt_references
 from .build_final_image_prompt import build_final_image_prompt
 from .generate_image import generate_image
+from .get_default_selfie_visual_prompt_reference import (
+    get_default_selfie_visual_prompt_reference,
+)

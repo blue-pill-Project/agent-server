@@ -90,3 +90,5 @@ class GraphState(TypedDict):
     image_reference: dict
     image_reference_image_url: str
     visual_scene: str
+    image_references: list[dict]
+    use_default_reference: bool

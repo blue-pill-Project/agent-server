@@ -6,8 +6,18 @@ from agents.subgraphs.generate_log_image.nodes import (
     build_final_image_prompt,
     rerank_visual_prompt_references,
     retrieve_visual_prompt_references,
+    get_default_selfie_visual_prompt_reference,
 )
 from agents.subgraphs.generate_log_image.state import GraphState
+
+
+def route_after_retrieve(
+    state: GraphState,
+) -> str:
+    if state["use_default_reference"]:
+        return "default"
+
+    return "rerank"
 
 
 # NOTE:
@@ -16,6 +26,7 @@ from agents.subgraphs.generate_log_image.state import GraphState
 def build_generate_log_image_graph() -> StateGraph:
     graph = StateGraph(GraphState)
 
+    ##========NODE========##
     graph.add_node(
         "retrieve_visual_prompt_references", retrieve_visual_prompt_references
     )
@@ -24,16 +35,29 @@ def build_generate_log_image_graph() -> StateGraph:
         build_visual_scene,
     )
     graph.add_node("rerank_visual_prompt_references", rerank_visual_prompt_references)
+    graph.add_node(
+        "get_default_selfie_visual_prompt_reference",
+        get_default_selfie_visual_prompt_reference,
+    )
     graph.add_node("build_final_image_prompt", build_final_image_prompt)
     graph.add_node("generate_image", generate_image)
 
+    ##========EDGE========##
     graph.add_edge(START, "build_visual_scene")
     graph.add_edge(
         "build_visual_scene",
         "retrieve_visual_prompt_references",
     )
+    graph.add_conditional_edges(
+        "retrieve_visual_prompt_references",
+        route_after_retrieve,
+        {
+            "default": "get_default_selfie_visual_prompt_reference",
+            "rerank": "rerank_visual_prompt_references",
+        },
+    )
     graph.add_edge(
-        "retrieve_visual_prompt_references", "rerank_visual_prompt_references"
+        "get_default_selfie_visual_prompt_reference", "build_final_image_prompt"
     )
     graph.add_edge("rerank_visual_prompt_references", "build_final_image_prompt")
     graph.add_edge("build_final_image_prompt", "generate_image")
