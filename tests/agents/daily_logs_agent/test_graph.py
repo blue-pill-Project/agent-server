@@ -89,13 +89,13 @@ async def test_daily_logs_graph(
                 "long_term_memories": result.get("long_term_memories") or [],
                 "related_chats": result.get("related_chats") or "",
                 "hourly_plan_description": result["hourly_plan"].description,
+                "use_default_reference": result.get("use_default_reference"),
+                "image_references": result.get("image_references"),
                 "image_reference": result.get("image_reference"),
                 "image_reference_image_url": result.get("image_reference_image_url"),
                 "image_prompt": result.get("image_prompt"),
                 "is_saved_long_term_memory": result.get("is_saved_long_term_memory"),
-                "visual_scene": result.get(
-                    "visual_scene"
-                ),
+                "visual_scene": result.get("visual_scene"),
             }
         )
 

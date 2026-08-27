@@ -25,9 +25,7 @@ from domains.visual_prompt_reference.repository import (
 from tests.agents.daily_logs_agent.cases import DAILY_LOG_CASES, DailyLogCase
 
 
-TEST_IMAGE_URL = (
-    "https://i.pinimg.com/736x/91/5e/0e/915e0e09e60665b3b653b7f8d7a30113.jpg"
-)
+TEST_IMAGE_URL = "https://pub-6197228c2b2a487daea08784bd1677d4.r2.dev/characters/1/eec8432f-dbe6-4ec5-ab32-f1e49166d8a3_%E1%84%8B%E1%85%A6%E1%84%85%E1%85%AE_%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%8D%E1%85%A1_%E1%84%8C%E1%85%A5%E1%86%AB%E1%84%89%E1%85%B5%E1%86%AB.png"
 
 
 def get_report_timestamp() -> str:
