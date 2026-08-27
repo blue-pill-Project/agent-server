@@ -1,7 +1,7 @@
-import os
 import boto3
 from botocore.config import Config
 from common.config import settings
+from uuid import uuid4
 
 
 def get_r2_client():
@@ -13,3 +13,8 @@ def get_r2_client():
         region_name="auto",
         config=Config(signature_version="s3v4"),
     )
+
+
+def generate_r2_image_key(prefix: str) -> str:
+    filename = f"{uuid4().hex}.png"
+    return f"{prefix}/{filename}"
