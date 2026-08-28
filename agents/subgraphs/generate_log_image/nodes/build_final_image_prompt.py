@@ -9,6 +9,7 @@ from agents.subgraphs.generate_log_image.prompts import (
     third_person_template,
     replace_outfit_template,
     preserve_outfit_template,
+    final_default_image_prompt_template,
 )
 
 
@@ -40,21 +41,29 @@ def build_final_image_prompt(
     """현재 장면과 이미지 레퍼런스를 기반으로 최종 이미지 프롬프트를 생성한다."""
 
     hourly_plan = state["hourly_plan"]
-    image_reference = state["image_reference"]
-
+    image_reference = state.get("image_reference")
     outfit_instruction = _build_outfit_instruction(hourly_plan.outfit)
 
-    camera_style_instruction = _build_camera_style_instruction(
-        image_reference["camera_style"]
-    )
+    if image_reference:
+        camera_style_instruction = _build_camera_style_instruction(
+            image_reference["camera_style"]
+        )
 
-    image_prompt = final_image_prompt_template.format(
-        time_label=runtime.context.timeslot_label,
-        visual_scene=state["visual_scene"],
-        outfit_instruction=outfit_instruction,
-        hourly_plan_location=hourly_plan.location,
-        camera_style_instruction=camera_style_instruction,
-    )
+        image_prompt = final_image_prompt_template.format(
+            time_label=runtime.context.timeslot_label,
+            visual_scene=state["visual_scene"],
+            outfit_instruction=outfit_instruction,
+            hourly_plan_location=hourly_plan.location,
+            camera_style_instruction=camera_style_instruction,
+        )
+
+    else:
+        image_prompt = final_default_image_prompt_template.format(
+            time_label=runtime.context.timeslot_label,
+            visual_scene=state["visual_scene"],
+            outfit_instruction=outfit_instruction,
+            hourly_plan_location=hourly_plan.location,
+        )
 
     return {
         "image_prompt": image_prompt,

@@ -21,17 +21,23 @@ async def retrieve_visual_prompt_references(
         query_vector=embedding,
         limit=5,
     )
+    # TODO: 수정해야함
     # 유사도 검사
     # SIMILARITY_THRESHOLD를 넘지 못하면 기본 셀카로 진행
-    has_relevant_reference = (
-        references and references[0]["similarity"] >= SIMILARITY_THRESHOLD
-    )
-    print(f"🔢: {references[0]['similarity']}")
+    if references:
+        has_relevant_reference = (
+            references and references[0]["similarity"] >= SIMILARITY_THRESHOLD
+        )
+        print(f"🔢: {references[0]['similarity']}")
 
-    if not has_relevant_reference:
+        if not has_relevant_reference:
+            return {
+                "use_default_reference": True,
+                "image_references": [],
+            }
         return {
-            "use_default_reference": True,
-            "image_references": [],
+            "use_default_reference": False,
+            "image_references": references,
         }
 
     return {

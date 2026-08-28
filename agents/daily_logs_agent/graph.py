@@ -71,8 +71,8 @@ async def call_generate_log_image_graph(state, runtime: Runtime[Context]):
     log_image_url = result["log_image_url"]
     image_prompt = result["image_prompt"]
     image_references = result["image_references"]
-    image_reference = result["image_reference"]
-    image_reference_image_url = result["image_reference_image_url"]
+    image_reference = result.get("image_reference")
+    image_reference_image_url = result.get("image_reference_image_url")
     visual_scene = result["visual_scene"]
     use_default_reference = result["use_default_reference"]
 

@@ -13,7 +13,7 @@ from common.config import settings
 def generate_image(state: GraphState, runtime: Runtime[Context]):
 
     image_prompt = state["image_prompt"]
-    image_reference_image_url = state["image_reference_image_url"]
+    image_reference_image_url = state.get("image_reference_image_url")
     image_url = runtime.context.image_url
 
     payload = {

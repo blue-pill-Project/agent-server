@@ -17,6 +17,9 @@ def route_after_retrieve(
     if state["use_default_reference"]:
         return "default"
 
+    if not state["image_references"]:
+        return "final"
+
     return "rerank"
 
 
@@ -54,6 +57,7 @@ def build_generate_log_image_graph() -> StateGraph:
         {
             "default": "get_default_selfie_visual_prompt_reference",
             "rerank": "rerank_visual_prompt_references",
+            "final": "build_final_image_prompt",
         },
     )
     graph.add_edge(

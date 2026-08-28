@@ -27,8 +27,8 @@ class GraphState(TypedDict):
     image_base64: str
     saved_image_path: str
     log_image_url: str
-    image_references: list[dict]
-    image_reference: dict
-    image_reference_image_url: str
+    image_references: list[dict] | None
+    image_reference: dict | None
+    image_reference_image_url: str | None
     visual_scene: str
     use_default_reference: bool
