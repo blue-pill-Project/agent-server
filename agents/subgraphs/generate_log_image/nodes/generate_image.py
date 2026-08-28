@@ -19,6 +19,7 @@ def generate_image(state: GraphState, runtime: Runtime[Context]):
     payload = {
         "model": "google/gemini-3.1-flash-lite-image",
         "prompt": image_prompt,
+        "aspect_ratio": "16:9",
     }
 
     input_references = []
