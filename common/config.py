@@ -18,6 +18,7 @@ class Settings:
         self.CLOUDFLARE_R2_ACCESS_KEY = os.getenv("CLOUDFLARE_R2_ACCESS_KEY", "")
         self.CLOUDFLARE_R2_SECRET_KEY = os.getenv("CLOUDFLARE_R2_SECRET_KEY", "")
         self.R2_PUBLIC_DOMAIN = os.getenv("R2_PUBLIC_DOMAIN", "")
+        self.R2_BUCKET_NAME = os.getenv("R2_BUCKET_NAME", "")
 
     def validate(self) -> None:
         required_settings = {
