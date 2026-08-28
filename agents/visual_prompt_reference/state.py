@@ -1,14 +1,25 @@
 from enum import Enum
-from typing import TypedDict, Annotated
-import operator
+from typing import TypedDict
 from dataclasses import dataclass
 from pydantic import BaseModel, Field
+
+
+@dataclass(frozen=True)
+class VisualPromptReferenceForSave:
+    category: str
+    camera_style: str
+    participant_count: int
+    image_key: str
+    situation: str
+    situation_embedding: list[float]
+    is_default_selfie: bool
 
 
 @dataclass
 class Context:
     image_bytes: bytes
     image_content_type: str
+    is_default: bool
 
 
 class ImagePromptCategory(str, Enum):
@@ -20,28 +31,20 @@ class ImagePromptCategory(str, Enum):
     OBJECT_PHOTO = "object_photo"
 
 
-class ShotSpec(BaseModel):
-    category: ImagePromptCategory = Field(description="Main category of image")
-    participant_count: int = Field(
-        description="Number of main characters appearing in the image"
-    )
-    prompt: str = Field(
-        description="Reusable filming-style prompt excluding character appearance, costume, props, and specific locations"
-    )
+class CameraStyle(str, Enum):
+    SELFIE = "selfie"
+    THIRD_PERSON = "third_person"
+    POV = "pov"
 
 
-class VisualPromptReference(BaseModel):
+class VisualPromptReferenceInfo(BaseModel):
     category: ImagePromptCategory = Field(description="Main category of image")
+    camera_style: CameraStyle
     participant_count: int = Field(
         description="Number of main characters appearing in the image"
-    )
-    prompt: str = Field(
-        description="Reusable filming-style prompt excluding character appearance, costume, props, and specific locations"
     )
     situation: str
 
 
 class GraphState(TypedDict):
-    shot_spec: ShotSpec
-    situation: str
-    visual_prompt_reference: VisualPromptReference
+    visual_prompt_reference_info: VisualPromptReferenceInfo
