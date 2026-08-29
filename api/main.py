@@ -19,6 +19,7 @@ from fastapi import FastAPI
 from langgraph.store.postgres import AsyncPostgresStore
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from common.db.pool import create_db_pool
+from common.logging_config import setup_logging
 from common.utils.reranker import BgeReranker
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
@@ -33,6 +34,7 @@ from domains.visual_prompt_reference.repository import VisualPromptReferenceRepo
 async def lifespan(app: FastAPI):
     # 서버 시작할 때 환경변수 체크
     settings.validate()
+    setup_logging()
     pool = create_db_pool()
     reranker = BgeReranker()
 
