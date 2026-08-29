@@ -1,13 +1,13 @@
 import base64
-import json
-import os
-from uuid import uuid4
 import requests
 from agents.daily_logs_agent.state import Context
 from agents.subgraphs.generate_log_image.state import GraphState
 from common.utils.r2 import generate_r2_image_key, get_r2_client
 from langgraph.runtime import Runtime
 from common.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def generate_image(state: GraphState, runtime: Runtime[Context]):
@@ -73,6 +73,12 @@ def generate_image(state: GraphState, runtime: Runtime[Context]):
 
         # DB엔 key만 저장
         log_image_url.append(key)
+
+    logger.info("generate_image 완료")
+    logger.debug(
+        "image url | log_image_url=%s",
+        f"{settings.R2_PUBLIC_DOMAIN}/{log_image_url[0]}",
+    )
     return {
         "log_image_url": log_image_url[0],
     }

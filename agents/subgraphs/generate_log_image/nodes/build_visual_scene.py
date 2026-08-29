@@ -6,6 +6,9 @@ from agents.subgraphs.generate_log_image.prompts import (
 from agents.subgraphs.generate_log_image.llm import (
     build_visual_scene_llm,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def build_visual_scene(state: GraphState):
@@ -22,5 +25,8 @@ def build_visual_scene(state: GraphState):
     )
 
     response = build_visual_scene_llm.invoke(formatted_prompt)
-
+    logger.debug(
+        "hourly plan description | hourly_plan_description=%s", hourly_plan_description
+    )
+    logger.info("build_visual_scene 완료")
     return {"visual_scene": response.content}

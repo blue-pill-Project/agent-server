@@ -4,6 +4,9 @@ from agents.subgraphs.generate_log_image.state import GraphState
 from langgraph.runtime import Runtime
 from agents.daily_logs_agent.state import Context
 from common.config import settings
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def rerank_visual_prompt_references(state: GraphState, runtime: Runtime[Context]):
@@ -20,7 +23,13 @@ async def rerank_visual_prompt_references(state: GraphState, runtime: Runtime[Co
     # 리랭킹된 결과중 가장 적합한 결과 선택
     best_result = reranked_results[0]
     best_image_reference = image_references[best_result.original_index]
-
+    logger.info("rerank_visual_prompt_references 완료")
+    logger.debug(
+        "rerank visual prompt references | top_1=%s | top_2=%s | top_3=%s ",
+        reranked_results[0],
+        reranked_results[1],
+        reranked_results[2],
+    )
     return {
         "image_reference": best_image_reference,
         "image_reference_image_url": f"{settings.R2_PUBLIC_DOMAIN}/{best_image_reference['image_url']}",
