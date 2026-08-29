@@ -1,3 +1,4 @@
+import logging
 from uuid import uuid4
 from agents.base import BaseAgent
 from agents.daily_logs_agent.graph import build_daily_logs_graph
@@ -16,6 +17,8 @@ from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 from common.config import settings
 from langgraph.graph.state import BaseStore
+
+logger = logging.getLogger(__name__)
 
 
 class DailyLogsAgent(BaseAgent):
@@ -49,6 +52,12 @@ class DailyLogsAgent(BaseAgent):
         log_room_id: str,
         log_room_member_id: str,
     ):
+        logger.info(
+            "daily logs 시작 | room=%s | member=%s | timeslot=%s",
+            log_room_id,
+            log_room_member_id,
+            timeslot,
+        )
         now = get_now()
         current_month = get_current_month()
         current_date = get_current_date()
@@ -126,4 +135,13 @@ class DailyLogsAgent(BaseAgent):
             )
         )
 
-        return log_saved and plan_saved
+        success = log_saved and plan_saved
+
+        logger.info(
+            "daily logs 저장 완료 | member=%s | log_saved=%s | plan_saved=%s",
+            log_room_member_id,
+            log_saved,
+            plan_saved,
+        )
+
+        return success

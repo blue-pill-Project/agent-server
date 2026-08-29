@@ -1,6 +1,8 @@
 from agents.subgraphs.search_long_term_memory.state import GraphState, Context
 from langgraph.runtime import Runtime
-from common.utils.reranker import BgeReranker
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def rerank_memories(
@@ -16,7 +18,13 @@ def rerank_memories(
     )
 
     final_long_term_memories = [result.content for result in results]
-    print(f"💙 검색된 장기기억: {final_long_term_memories}")
+    logger.info("rerank_memories 완료")
+    logger.debug(
+        "rerank memories | top_1=%s | top_2=%s | top_3=%s ",
+        final_long_term_memories[0],
+        final_long_term_memories[1],
+        final_long_term_memories[2],
+    )
     return {
         "reranked_results": results,
         "final_long_term_memories": final_long_term_memories,

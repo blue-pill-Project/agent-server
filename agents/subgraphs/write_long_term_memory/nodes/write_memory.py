@@ -4,6 +4,9 @@ from agents.subgraphs.write_long_term_memory.state import (
     GraphState,
 )
 from langgraph.runtime import Runtime
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def write_memory(
@@ -28,4 +31,7 @@ def write_memory(
             index=["content"],
         )
 
+    logger.info("write_memory 완료")
+
+    # TODO: 이거 무조건 참이네..? 고쳐야함
     return {"is_saved_long_term_memory": True}

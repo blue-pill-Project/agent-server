@@ -5,6 +5,9 @@ from agents.subgraphs.write_long_term_memory.state import Memories, GraphState
 from agents.subgraphs.write_long_term_memory.llm import (
     extract_memory_candidates_llm,
 )
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def extract_memory_candidates(
@@ -23,5 +26,11 @@ def extract_memory_candidates(
 
     structured_model = extract_memory_candidates_llm.with_structured_output(Memories)
     response = structured_model.invoke(formatted_prompt)
-    print(f"❤️ 저장된 장기기억: {response.memories}")
+    logger.info("extract_memory_candidates 완료")
+    logger.debug(
+        "memory candidates | count=%d\n%s",
+        len(response.memories),
+        "\n".join(f"- {memory}" for memory in response.memories),
+    )
+
     return {"memories": response.memories}
