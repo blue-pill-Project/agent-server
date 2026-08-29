@@ -1,4 +1,3 @@
-import pprint
 from common.utils.embedding import embed_text
 from agents.subgraphs.generate_log_image.state import GraphState
 from langgraph.runtime import Runtime
@@ -25,10 +24,8 @@ async def rerank_visual_prompt_references(state: GraphState, runtime: Runtime[Co
     best_image_reference = image_references[best_result.original_index]
     logger.info("rerank_visual_prompt_references 완료")
     logger.debug(
-        "rerank visual prompt references | top_1=%s | top_2=%s | top_3=%s ",
-        reranked_results[0],
-        reranked_results[1],
-        reranked_results[2],
+        "rerank visual prompt references | top_results=%s",
+        reranked_results[:3],
     )
     return {
         "image_reference": best_image_reference,
