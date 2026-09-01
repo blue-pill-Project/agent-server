@@ -1,3 +1,5 @@
+import logging
+
 from agents.subgraphs.search_long_term_memory.state import (
     GraphState,
     Context,
@@ -5,6 +7,8 @@ from agents.subgraphs.search_long_term_memory.state import (
 )
 from langgraph.runtime import Runtime
 from domains.long_term_memory.service import build_memory_namespace
+
+logger = logging.getLogger(__name__)
 
 
 def search_memories(
@@ -28,6 +32,9 @@ def search_memories(
         filter=search_filter,
         limit=10,
     )
+
+    logger.info("search_memories 완료")
+
     return {
         "search_results": [
             SearchResult(

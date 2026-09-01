@@ -28,7 +28,7 @@ async def memory_store() -> AsyncIterator[AsyncPostgresStore]:
     )
 
     async with AsyncPostgresStore.from_conn_string(
-        settings.DATABASE_URL,
+        settings.DB_URL,
         index={
             "embed": embeddings,
             "dims": 1536,

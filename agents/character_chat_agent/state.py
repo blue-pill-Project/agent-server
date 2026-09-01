@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import datetime
-from typing import Annotated, Literal, NotRequired, TypedDict
+from typing import Annotated, Any, Literal, NotRequired, TypedDict
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
 from pydantic import BaseModel
@@ -15,6 +15,7 @@ class Context:
     log_room_relationships: str
     current_date: datetime.date
     now: datetime.date
+    reranker: Any
 
 
 class IntentDecision(BaseModel):

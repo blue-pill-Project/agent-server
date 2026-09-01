@@ -10,14 +10,20 @@ class HourlyPlanRepository:
 
     async def save(self, row: tuple) -> bool:
         """hourly_plan 저장.
-        (daily_plan_id, timeslot) 유니크라 재실행 시 덮어쓴다.
+
+        row = (daily_plan_id, log_room_member_id, date, timeslot,
+               title, description, outfit, location)
+        (log_room_member_id, date, timeslot) 유니크라 재실행 시 덮어쓴다.
+        daily_plan_id 는 있으면 연결하고, 없으면(주간 계획 미생성 시) NULL.
         """
         query = """
             INSERT INTO hourly_plans (
-                daily_plan_id, timeslot, title, description, outfit, location
+                daily_plan_id, log_room_member_id, date, timeslot,
+                title, description, outfit, location
             )
-            VALUES (%s, %s, %s, %s, %s, %s)
-            ON CONFLICT (daily_plan_id, timeslot) DO UPDATE SET
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (log_room_member_id, date, timeslot) DO UPDATE SET
+                daily_plan_id = EXCLUDED.daily_plan_id,
                 title = EXCLUDED.title,
                 description = EXCLUDED.description,
                 outfit = EXCLUDED.outfit,

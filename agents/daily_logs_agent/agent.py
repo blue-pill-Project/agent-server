@@ -1,3 +1,4 @@
+import logging
 from uuid import uuid4
 from agents.base import BaseAgent
 from agents.daily_logs_agent.graph import build_daily_logs_graph
@@ -8,6 +9,7 @@ from common.utils.datetime import (
     get_now,
     get_timeslot_label,
 )
+from common.utils.reranker import BgeReranker
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.hourly_log.repository import HourlyLogRepository
 from domains.hourly_plan.repository import HourlyPlanRepository
@@ -15,6 +17,8 @@ from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 from common.config import settings
 from langgraph.graph.state import BaseStore
+
+logger = logging.getLogger(__name__)
 
 
 class DailyLogsAgent(BaseAgent):
@@ -26,11 +30,12 @@ class DailyLogsAgent(BaseAgent):
         hourly_plan_repository: HourlyPlanRepository,
         visual_prompt_reference_repository: VisualPromptReferenceRepository,
         store: BaseStore,
+        reranker: BgeReranker,
     ):
         super().__init__(
             store=store,
         )
-
+        self._reranker = reranker
         self._log_room_member_repository = log_room_member_repository
         self._daily_plan_repository = daily_plan_repository
         self._hourly_log_repository = hourly_log_repository
@@ -47,6 +52,12 @@ class DailyLogsAgent(BaseAgent):
         log_room_id: str,
         log_room_member_id: str,
     ):
+        logger.info(
+            "daily logs 시작 | room=%s | member=%s | timeslot=%s",
+            log_room_id,
+            log_room_member_id,
+            timeslot,
+        )
         now = get_now()
         current_month = get_current_month()
         current_date = get_current_date()
@@ -66,7 +77,7 @@ class DailyLogsAgent(BaseAgent):
             )
             return False
         daily_plan_id = today_plan["daily_plan_id"]
-        # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후
+        # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후 
         previous_plans = await self._hourly_plan_repository.get_by_today_after_six()
         # 캐릭터 참조 이미지 (R2 공개 URL). 없으면 참조 없이 진행.
         image_key = await self._log_room_member_repository.get_character_image_key(
@@ -96,6 +107,7 @@ class DailyLogsAgent(BaseAgent):
             visual_prompt_reference_repository=(
                 self._visual_prompt_reference_repository
             ),
+            reranker=self._reranker,
         )
 
         state = await self.invoke({}, context=context)
@@ -119,6 +131,8 @@ class DailyLogsAgent(BaseAgent):
         plan_saved = await self._hourly_plan_repository.save(
             (
                 daily_plan_id,
+                log_room_member_id,
+                current_date,
                 int(hourly_plan.timeslot),
                 hourly_plan.title,
                 hourly_plan.description,
@@ -127,4 +141,13 @@ class DailyLogsAgent(BaseAgent):
             )
         )
 
-        return log_saved and plan_saved
+        success = log_saved and plan_saved
+
+        logger.info(
+            "daily logs 저장 완료 | member=%s | log_saved=%s | plan_saved=%s",
+            log_room_member_id,
+            log_saved,
+            plan_saved,
+        )
+
+        return success

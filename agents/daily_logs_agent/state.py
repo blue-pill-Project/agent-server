@@ -23,6 +23,7 @@ class Context:
     today_plan: str
     image_url: str
     visual_prompt_reference_repository: Any
+    reranker: Any
 
 
 class HourlyPlan(BaseModel):
@@ -81,7 +82,13 @@ class GraphState(TypedDict):
     previous_plans: list[HourlyPlan]
     long_term_memories: list[str] | None
     hourly_plan: HourlyPlan
+    image_prompt: str
     log_text: LogText
     hourly_log: HourlyLog
     log_image_url: str
     is_saved_long_term_memory: bool
+    image_reference_image_url: str | None
+    visual_scene: str
+    image_references: list[dict] | None
+    image_reference: dict | None
+    use_default_reference: bool

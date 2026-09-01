@@ -19,6 +19,8 @@ from fastapi import FastAPI
 from langgraph.store.postgres import AsyncPostgresStore
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from common.db.pool import create_db_pool
+from common.logging_config import setup_logging
+from common.utils.reranker import BgeReranker
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository
@@ -32,7 +34,9 @@ from domains.visual_prompt_reference.repository import VisualPromptReferenceRepo
 async def lifespan(app: FastAPI):
     # 서버 시작할 때 환경변수 체크
     settings.validate()
+    setup_logging()
     pool = create_db_pool()
+    reranker = BgeReranker()
 
     await pool.open()
     await pool.wait(timeout=10)
@@ -68,12 +72,14 @@ async def lifespan(app: FastAPI):
             hourly_plan_repository=hourly_plan_repository,
             visual_prompt_reference_repository=visual_prompt_reference_repository,
             store=store,
+            reranker=reranker,
         )
 
         character_chat_agent = CharacterChatAgent(
             log_room_member_repository=log_room_member_repository,
             store=store,
             checkpointer=checkpointer,
+            reranker=reranker,
         )
 
         visual_prompt_reference_agent = VisualPromptReferenceAgent(
@@ -89,6 +95,7 @@ async def lifespan(app: FastAPI):
         visual_prompt_reference_agent.get_graph()
         character_prompt_agent.get_graph()
 
+        app.state.reranker = reranker
         app.state.db_pool = pool
         app.state.store = store
         app.state.checkpointer = checkpointer
