@@ -69,16 +69,16 @@ class DailyLogsAgent(BaseAgent):
         today_plan = await self._daily_plan_repository.get_today(
             log_room_id, log_room_member_id, current_date
         )
-        # daily_plan 은 hourly_plan/log 생성의 전제. 없으면 로그를 만들지 않고 실패로 종료.
-        if today_plan is None:
-            print(
-                f"daily_plan 없음 - daily-log 중단: room={log_room_id}, "
-                f"member={log_room_member_id}, date={current_date}"
-            )
-            return False
-        daily_plan_id = today_plan["daily_plan_id"]
-        # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후 
-        previous_plans = await self._hourly_plan_repository.get_by_today_after_six()
+        # daily_plan 은 있으면 연결. 없어도(주간 계획 미생성) 로그·hourly_plan 은 생성한다.
+        daily_plan_id = today_plan["daily_plan_id"] if today_plan else None
+        # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후
+        previous_plans = await self._hourly_plan_repository.get_by_today_after_six(log_room_member_id)
+        recent_messages = await self._message_repository.find_recent_messages(
+            log_room_id=log_room_id,
+            reference_time=now,
+            hours=24,
+            limit=20,
+        )
         # 캐릭터 참조 이미지 (R2 공개 URL). 없으면 참조 없이 진행.
         image_key = await self._log_room_member_repository.get_character_image_key(
             log_room_member_id
