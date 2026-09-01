@@ -31,6 +31,7 @@ from domains.hourly_log.repository import HourlyLogRepository
 from domains.hourly_plan.repository import HourlyPlanRepository
 from common.config import settings
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
+from domains.message.repository import MessageRepository
 
 
 @asynccontextmanager
@@ -58,6 +59,8 @@ async def lifespan(app: FastAPI):
         hourly_plan_repository = HourlyPlanRepository(pool)
         visual_prompt_reference_repository = VisualPromptReferenceRepository(pool)
         character_repository = CharacterRepository(pool)
+        message_repository = MessageRepository(pool)
+
 
         trend_agent = TrendAgent(
             trend_repository=trend_repository,
@@ -75,6 +78,7 @@ async def lifespan(app: FastAPI):
             hourly_log_repository=hourly_log_repository,
             hourly_plan_repository=hourly_plan_repository,
             visual_prompt_reference_repository=visual_prompt_reference_repository,
+            message_repository=message_repository,
             store=store,
             reranker=reranker,
         )

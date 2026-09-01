@@ -24,6 +24,7 @@ class Context:
     image_url: str
     visual_prompt_reference_repository: Any
     reranker: Any
+    recent_messages: list[dict]
 
 
 class HourlyPlan(BaseModel):

@@ -14,6 +14,7 @@ from domains.daily_plan.repository import DailyPlanRepository
 from domains.hourly_log.repository import HourlyLogRepository
 from domains.hourly_plan.repository import HourlyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
+from domains.message.repository import MessageRepository
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 from common.config import settings
 from langgraph.graph.state import BaseStore
@@ -29,6 +30,7 @@ class DailyLogsAgent(BaseAgent):
         hourly_log_repository: HourlyLogRepository,
         hourly_plan_repository: HourlyPlanRepository,
         visual_prompt_reference_repository: VisualPromptReferenceRepository,
+        message_repository: MessageRepository,
         store: BaseStore,
         reranker: BgeReranker,
     ):
@@ -41,6 +43,7 @@ class DailyLogsAgent(BaseAgent):
         self._hourly_log_repository = hourly_log_repository
         self._hourly_plan_repository = hourly_plan_repository
         self._visual_prompt_reference_repository = visual_prompt_reference_repository
+        self._message_repository = message_repository
 
     def build_graph(self):
         return build_daily_logs_graph()
@@ -110,6 +113,7 @@ class DailyLogsAgent(BaseAgent):
                 self._visual_prompt_reference_repository
             ),
             reranker=self._reranker,
+            recent_messages=recent_messages,
         )
 
         state = await self.invoke({}, context=context)
