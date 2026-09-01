@@ -41,25 +41,25 @@ class HourlyPlanRepository:
 
     async def get_by_today_after_six(
         self,
+        log_room_member_id: int,
     ) -> list[dict]:
         query = """
-                SELECT
-                    timeslot,
-                    title,
-                    description,
-                    outfit,
-                    location
-                FROM hourly_plans
-                WHERE created_at >= CURRENT_DATE + INTERVAL '5 hours'  
-                AND created_at < CURRENT_TIMESTAMP;             
-            """
+            SELECT
+                timeslot,
+                title,
+                description,
+                outfit,
+                location
+            FROM hourly_plans
+            WHERE log_room_member_id = %s
+            AND created_at >= CURRENT_DATE + INTERVAL '5 hours'
+            AND created_at < CURRENT_TIMESTAMP
+            ORDER BY timeslot
+        """
 
         async with self._pool.connection() as conn:
             async with conn.cursor() as cursor:
-                await cursor.execute(
-                    query,
-                )
-
+                await cursor.execute(query, (log_room_member_id,))
                 rows = await cursor.fetchall()
 
         return [dict(row) for row in rows]

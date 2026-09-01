@@ -14,6 +14,7 @@ from domains.daily_plan.repository import DailyPlanRepository
 from domains.hourly_log.repository import HourlyLogRepository
 from domains.hourly_plan.repository import HourlyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
+from domains.message.repository import MessageRepository
 from domains.visual_prompt_reference.repository import VisualPromptReferenceRepository
 from common.config import settings
 from langgraph.graph.state import BaseStore
@@ -29,6 +30,7 @@ class DailyLogsAgent(BaseAgent):
         hourly_log_repository: HourlyLogRepository,
         hourly_plan_repository: HourlyPlanRepository,
         visual_prompt_reference_repository: VisualPromptReferenceRepository,
+        message_repository: MessageRepository,
         store: BaseStore,
         reranker: BgeReranker,
     ):
@@ -41,6 +43,7 @@ class DailyLogsAgent(BaseAgent):
         self._hourly_log_repository = hourly_log_repository
         self._hourly_plan_repository = hourly_plan_repository
         self._visual_prompt_reference_repository = visual_prompt_reference_repository
+        self._message_repository = message_repository
 
     def build_graph(self):
         return build_daily_logs_graph()
@@ -72,7 +75,13 @@ class DailyLogsAgent(BaseAgent):
         # daily_plan 은 있으면 연결. 없어도(주간 계획 미생성) 로그·hourly_plan 은 생성한다.
         daily_plan_id = today_plan["daily_plan_id"] if today_plan else None
         # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후
-        previous_plans = await self._hourly_plan_repository.get_by_today_after_six()
+        previous_plans = await self._hourly_plan_repository.get_by_today_after_six(log_room_member_id)
+        recent_messages = await self._message_repository.find_recent_messages(
+            log_room_id=log_room_id,
+            reference_time=now,
+            hours=24,
+            limit=20,
+        )
         # 캐릭터 참조 이미지 (R2 공개 URL). 없으면 참조 없이 진행.
         image_key = await self._log_room_member_repository.get_character_image_key(
             log_room_member_id
@@ -102,6 +111,7 @@ class DailyLogsAgent(BaseAgent):
                 self._visual_prompt_reference_repository
             ),
             reranker=self._reranker,
+            recent_messages=recent_messages,
         )
 
         state = await self.invoke({}, context=context)
