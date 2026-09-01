@@ -1,6 +1,6 @@
 from langgraph.graph import StateGraph, START, END
-from agents.subgraphs.chat_rule_agent.nodes import generate_chat_rule
-from agents.subgraphs.chat_rule_agent.state import GraphState
+from agents.chat_rule_agent.nodes import generate_chat_rule
+from agents.chat_rule_agent.state import GraphState
 
 
 def build_generate_chat_rule_graph() -> StateGraph:

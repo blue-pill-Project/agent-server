@@ -5,7 +5,7 @@ generate_chat_rule_instructions = """
 실제 한국인이 메신저로 대화하는 것처럼 자연스러운 채팅 규칙을 작성하라.
 
 <personality>
-{log_room_member_prompt}
+{character_prompt}
 </personality>
 
 <base_speech_style>

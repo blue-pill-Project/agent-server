@@ -4,7 +4,7 @@ from common.llm.models import Models
 
 generate_chat_rule_llm = get_llm(
     LLMConfig(
-        model=Models.GEMINI_FLASH_LITE,
+        model=Models.GPT_LUNA_PRO,
         temperature=0.7,
     )
 )

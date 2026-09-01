@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from agents.chat_rule_agent.agent import ChatRuleAgent
 from agents.visual_prompt_reference.agent import VisualPromptReferenceAgent
 from agents.weekly_plan_agent.agent import WeeklyPlanAgent
 from agents.daily_logs_agent.agent import DailyLogsAgent
@@ -13,6 +14,7 @@ from api.routers import (
     character_chat,
     log_rooms,
     character_prompt,
+    chat_rule,
 )
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -21,6 +23,7 @@ from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from common.db.pool import create_db_pool
 from common.logging_config import setup_logging
 from common.utils.reranker import BgeReranker
+from domains.character.repository import CharacterRepository
 from domains.daily_plan.repository import DailyPlanRepository
 from domains.log_room_member.repository import LogRoomMemberRepository
 from domains.trend.repository import TrendRepository
@@ -54,6 +57,7 @@ async def lifespan(app: FastAPI):
         hourly_log_repository = HourlyLogRepository(pool)
         hourly_plan_repository = HourlyPlanRepository(pool)
         visual_prompt_reference_repository = VisualPromptReferenceRepository(pool)
+        character_repository = CharacterRepository(pool)
 
         trend_agent = TrendAgent(
             trend_repository=trend_repository,
@@ -88,12 +92,17 @@ async def lifespan(app: FastAPI):
 
         character_prompt_agent = CharacterPromptAgent()
 
+        chat_rule_agent = ChatRuleAgent(
+            character_repository=character_repository,
+        )
+
         trend_agent.get_graph()
         weekly_plan_agent.get_graph()
         daily_logs_agent.get_graph()
         character_chat_agent.get_graph()
         visual_prompt_reference_agent.get_graph()
         character_prompt_agent.get_graph()
+        chat_rule_agent.get_graph()
 
         app.state.reranker = reranker
         app.state.db_pool = pool
@@ -106,6 +115,7 @@ async def lifespan(app: FastAPI):
         app.state.character_chat_agent = character_chat_agent
         app.state.visual_prompt_reference_agent = visual_prompt_reference_agent
         app.state.character_prompt_agent = character_prompt_agent
+        app.state.chat_rule_agent = chat_rule_agent
 
         yield
 
@@ -123,6 +133,7 @@ app.include_router(character_chat.router)
 app.include_router(visual_prompt_reference.router)
 app.include_router(log_rooms.router)
 app.include_router(character_prompt.router)
+app.include_router(chat_rule.router)
 
 
 @app.get("/health")
