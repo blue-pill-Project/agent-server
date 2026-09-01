@@ -9,3 +9,4 @@ def pytest_configure():
     logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
     logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
     logging.getLogger("botocore").setLevel(logging.WARNING)
+    logging.getLogger("langsmith").setLevel(logging.WARNING)
