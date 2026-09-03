@@ -75,7 +75,9 @@ class DailyLogsAgent(BaseAgent):
         # daily_plan 은 있으면 연결. 없어도(주간 계획 미생성) 로그·hourly_plan 은 생성한다.
         daily_plan_id = today_plan["daily_plan_id"] if today_plan else None
         # NOTE: 이전 계획 불러오기 current_date 의 오전 6시 이후
-        previous_plans = await self._hourly_plan_repository.get_by_today_after_six(log_room_member_id)
+        previous_plans = await self._hourly_plan_repository.get_by_today_after_six(
+            log_room_member_id
+        )
         recent_messages = await self._message_repository.find_recent_messages(
             log_room_id=log_room_id,
             reference_time=now,
