@@ -3,8 +3,8 @@ from pprint import pprint
 from typing import Any, Callable
 import pytest
 
-from agents.subgraphs.chat_rule_agent.graph import build_generate_chat_rule_graph
-from agents.subgraphs.chat_rule_agent.state import (
+from agents.chat_rule_agent.graph import build_generate_chat_rule_graph
+from agents.chat_rule_agent.state import (
     Context,
 )
 from common.config import settings
