@@ -1,4 +1,4 @@
-from agents.character_chat_agent.llm import generate_reply_llm
+from agents.character_chat_agent.llm import classify_intent_llm
 from agents.character_chat_agent.state import GraphState, IntentDecision
 from agents.character_chat_agent.prompts import classify_intent_instructions
 from agents.character_chat_agent.state import Context
@@ -17,7 +17,7 @@ def classify_intent(state: GraphState, runtime: Runtime[Context]) -> dict:
         log_room_relationships=log_room_relationships,
     )
 
-    structured_model = generate_reply_llm.with_structured_output(IntentDecision)
+    structured_model = classify_intent_llm.with_structured_output(IntentDecision)
     response = structured_model.invoke(formatted_prompt)
     print(f"💛: {response}")
     return {"intent_decision": response}

@@ -61,7 +61,6 @@ async def lifespan(app: FastAPI):
         character_repository = CharacterRepository(pool)
         message_repository = MessageRepository(pool)
 
-
         trend_agent = TrendAgent(
             trend_repository=trend_repository,
         )
