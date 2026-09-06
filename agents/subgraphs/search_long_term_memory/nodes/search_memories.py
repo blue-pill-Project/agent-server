@@ -32,8 +32,14 @@ def search_memories(
         filter=search_filter,
         limit=10,
     )
+    logger.debug("장기기억 검색 결과 | results=%s", results)
+
+    final_results = [
+        result for result in results if result.score is not None and result.score >= 0.5
+    ]
 
     logger.info("search_memories 완료")
+    logger.debug("장기기억 최종 검색 결과 | final_results=%s", final_results)
 
     return {
         "search_results": [
@@ -42,6 +48,6 @@ def search_memories(
                 source_type=result.value["source_type"],
                 occurred_at=result.value["occurred_at"],
             )
-            for result in results
+            for result in final_results
         ]
     }

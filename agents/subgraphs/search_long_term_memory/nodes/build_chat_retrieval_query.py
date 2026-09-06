@@ -17,7 +17,6 @@ def build_chat_retrieval_query(
     state: GraphState,
     runtime: Runtime[Context],
 ):
-    print("💬")
     formatted_prompt = build_chat_retrieval_query_instructions.format(
         now=runtime.context.now,
         source=state["source"].source,
