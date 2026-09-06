@@ -15,7 +15,7 @@ async def retrieve_visual_prompt_references(
     visual_scene = state["visual_scene"]
     # TODO: 나중에 이미지 SOLO 말고 다른 종류의 사진도 검색해서 제네레이션 가능해야함
     category = ImageCategory.SOLO_PHOTO
-    embedding = embed_text(f"{visual_scene}")
+    embedding = await embed_text(visual_scene)
 
     references = await repository.search(
         category=category,
@@ -35,7 +35,7 @@ async def retrieve_visual_prompt_references(
         }
 
     logger.debug("similarity | similarity=%s", references[0]["similarity"])
-    if not references[0]["similarity"] >= SIMILARITY_THRESHOLD:
+    if references[0]["similarity"] < SIMILARITY_THRESHOLD:
         logger.info(
             "retrieve_visual_prompt_references 완료 | 기본 참조 이미지로 이미지 생성"
         )

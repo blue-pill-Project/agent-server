@@ -1,5 +1,3 @@
-import os
-from uuid import uuid4
 from agents.base import BaseAgent
 from agents.visual_prompt_reference.state import Context, VisualPromptReferenceForSave
 from agents.visual_prompt_reference.graph import build_visual_prompt_reference_graph
@@ -25,7 +23,7 @@ class VisualPromptReferenceAgent(BaseAgent):
     def build_graph(self):
         return build_visual_prompt_reference_graph()
 
-    def _build_visual_prompt_reference_for_save(
+    async def _build_visual_prompt_reference_for_save(
         self,
         info,
         image_key: str,
@@ -37,7 +35,7 @@ class VisualPromptReferenceAgent(BaseAgent):
             participant_count=info.participant_count,
             image_key=image_key,
             situation=info.situation,
-            situation_embedding=embed_text(info.situation),
+            situation_embedding=await embed_text(info.situation),
             is_default_selfie=(is_default and info.camera_style == "selfie"),
         )
 
@@ -81,10 +79,12 @@ class VisualPromptReferenceAgent(BaseAgent):
         # DB에 저장할 정보를 모으고 객체로 만든다.
         visual_prompt_reference_info = state["visual_prompt_reference_info"]
 
-        visual_prompt_reference_for_save = self._build_visual_prompt_reference_for_save(
-            info=visual_prompt_reference_info,
-            image_key=key,
-            is_default=is_default,
+        visual_prompt_reference_for_save = (
+            await self._build_visual_prompt_reference_for_save(
+                info=visual_prompt_reference_info,
+                image_key=key,
+                is_default=is_default,
+            )
         )
         # 정리된 최종 데이터를 저장한다.
         success = await self._visual_prompt_reference_repository.save(
