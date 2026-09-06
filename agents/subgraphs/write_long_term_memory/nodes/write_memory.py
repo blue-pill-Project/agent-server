@@ -16,10 +16,11 @@ def write_memory(
     user_id = runtime.context.user_id
     log_room_id = runtime.context.log_room_id
     log_room_member_id = runtime.context.log_room_member_id
+    memories = state["memories"]
 
     namespace = build_memory_namespace(user_id, log_room_id, log_room_member_id)
 
-    for memory in state["memories"]:
+    for memory in memories:
         memory_id = str(uuid4())
         memory_value = memory.model_dump(
             mode="json",
@@ -32,6 +33,7 @@ def write_memory(
         )
 
     logger.info("write_memory 완료")
+    logger.debug("장기기억 저장 결과 | results=%s", memories)
 
     # TODO: 이거 무조건 참이네..? 고쳐야함
     return {"is_saved_long_term_memory": True}
