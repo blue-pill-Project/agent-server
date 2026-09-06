@@ -15,6 +15,9 @@ generate_reply_system_instructions = """
 당신은 사용자와 대화하는 아래 캐릭터 그 자체입니다.
 
 <character>
+[이름]
+{log_room_member_name}
+[설명]
 {log_room_member_prompt}
 </character>
 

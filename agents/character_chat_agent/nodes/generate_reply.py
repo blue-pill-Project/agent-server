@@ -10,16 +10,16 @@ def generate_reply(
     state: GraphState,
     runtime: Runtime[Context],
 ) -> dict:
-    log_room_member_prompt = runtime.context.log_room_member_prompt
+    log_room_member_info = runtime.context.log_room_member_info
     log_room_relationships = runtime.context.log_room_relationships
-    example_dialogues = runtime.context.example_dialogues
     long_term_memories = state["long_term_memories"]
 
     formatted_system_prompt = generate_reply_system_instructions.format(
-        log_room_member_prompt=log_room_member_prompt,
+        log_room_member_name=log_room_member_info["name"],
+        log_room_member_prompt=log_room_member_info["prompt"],
         log_room_relationships=log_room_relationships,
         long_term_memories=long_term_memories,
-        example_dialogues=example_dialogues,
+        example_dialogues=log_room_member_info["example_dialogues"],
         current_date=runtime.context.current_date,
     )
     messages = [

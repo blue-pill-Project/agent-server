@@ -11,11 +11,10 @@ class Context:
     user_id: str
     log_room_id: str
     log_room_member_id: str
-    log_room_member_prompt: str
+    log_room_member_info: dict
     log_room_relationships: str
     current_date: datetime.date
     now: datetime.date
-    example_dialogues: str
     reranker: Any
 
 
