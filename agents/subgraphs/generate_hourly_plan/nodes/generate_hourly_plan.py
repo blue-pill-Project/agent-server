@@ -9,6 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def format_recent_chat(
     messages: list[dict],
     character_sender_id: int,
@@ -19,18 +20,14 @@ def format_recent_chat(
     lines = []
 
     for message in messages:
-        role = (
-            "캐릭터"
-            if message["sender_id"] == character_sender_id
-            else "사용자"
-        )
+        role = "캐릭터" if message["sender_id"] == character_sender_id else "사용자"
 
         lines.append(
-            f'- [{message["created_at"]:%m-%d %H:%M}] '
-            f'{role}: {message["content"]}'
+            f"- [{message['created_at']:%m-%d %H:%M}] {role}: {message['content']}"
         )
 
     return "\n".join(lines)
+
 
 def generate_hourly_plan(
     state: GraphState,
@@ -70,7 +67,7 @@ def generate_hourly_plan(
         previous_plans=previous_plans,
         timeslot=timeslot,
         memory_context=memory_context,
-        recent_chat_context=recent_chat_context
+        recent_chat_context=recent_chat_context,
     )
     logger.info("generate_hourly_plan 완료")
 

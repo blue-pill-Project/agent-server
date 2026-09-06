@@ -4,7 +4,7 @@ from collections.abc import AsyncIterator, Callable
 from pprint import pprint
 from typing import Any, Iterator
 import pytest
-from agents.subgraphs.chat_rule_agent.state import Context
+from agents.chat_rule_agent.state import Context
 from common.config import settings
 from common.utils.datetime import get_now
 
