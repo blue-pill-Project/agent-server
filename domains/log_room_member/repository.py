@@ -8,10 +8,8 @@ class LogRoomMemberRepository:
     ):
         self._pool = pool
 
-    async def get_prompt(
+    async def get_info(
         self,
-        user_id: int,
-        log_room_id: int,
         log_room_member_id: int,
     ) -> dict | None:
         query = """
@@ -26,10 +24,7 @@ class LogRoomMemberRepository:
             async with conn.cursor() as cursor:
                 await cursor.execute(
                     query,
-                    (
-                        log_room_member_id,
-                        # log_room_id,
-                    ),
+                    (log_room_member_id,),
                 )
 
                 row = await cursor.fetchone()
@@ -87,20 +82,3 @@ class LogRoomMemberRepository:
             return None
 
         return row["label"] if row else "친구"
-
-    async def get_example_dialogues(
-        self,
-        log_room_member_id: int,
-    ) -> list[str]:
-        query = """
-            SELECT content
-            FROM example_dialogues
-            WHERE character_id = %s
-        """
-
-        async with self._pool.connection() as conn:
-            async with conn.cursor() as cursor:
-                await cursor.execute(query, (log_room_member_id,))
-                rows = await cursor.fetchall()
-
-        return [row["content"] for row in rows]

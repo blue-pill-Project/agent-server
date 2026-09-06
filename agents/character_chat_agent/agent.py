@@ -32,16 +32,11 @@ class CharacterChatAgent(BaseAgent):
         current_date = get_current_date()
         now = get_now()
         thread_id = f"room_{log_room_id}:character_{log_room_member_id}:user_{user_id}"
-        log_room_member_prompt = await self._log_room_member_repository.get_prompt(
-            user_id, log_room_id, log_room_member_id
+        log_room_member_info = await self._log_room_member_repository.get_info(
+            log_room_member_id
         )
         log_room_relationships = (
             await self._log_room_member_repository.get_relationship(log_room_id)
-        )
-        example_dialogues = (
-            await self._log_room_member_repository.get_example_dialogues(
-                log_room_member_id
-            )
         )
 
         context = Context(
@@ -50,9 +45,8 @@ class CharacterChatAgent(BaseAgent):
             log_room_member_id=log_room_member_id,
             current_date=current_date,
             now=now,
-            log_room_member_prompt=log_room_member_prompt,
+            log_room_member_info=log_room_member_info,
             log_room_relationships=log_room_relationships,
-            example_dialogues=example_dialogues,
             reranker=self._reranker,
         )
 
