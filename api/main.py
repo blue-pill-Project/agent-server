@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from langchain_openai import OpenAIEmbeddings
 from agents.chat_rule_agent.agent import ChatRuleAgent
 from agents.visual_prompt_reference.agent import VisualPromptReferenceAgent
 from agents.weekly_plan_agent.agent import WeeklyPlanAgent
@@ -22,6 +23,7 @@ from langgraph.store.postgres import AsyncPostgresStore
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 from common.db.pool import create_db_pool
 from common.logging_config import setup_logging
+from common.utils.embedding import get_embeddings
 from common.utils.reranker import BgeReranker
 from domains.character.repository import CharacterRepository
 from domains.daily_plan.repository import DailyPlanRepository
@@ -46,7 +48,17 @@ async def lifespan(app: FastAPI):
     await pool.wait(timeout=10)
 
     try:
-        store = AsyncPostgresStore(pool)
+        embeddings = get_embeddings()
+
+        store = AsyncPostgresStore(
+            pool,
+            index={
+                "embed": embeddings,
+                "dims": 1536,
+                "fields": ["content"],
+            },
+        )
+
         checkpointer = AsyncPostgresSaver(pool)
 
         await store.setup()
