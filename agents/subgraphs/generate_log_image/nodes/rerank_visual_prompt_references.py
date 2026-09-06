@@ -1,4 +1,3 @@
-from common.utils.embedding import embed_text
 from agents.subgraphs.generate_log_image.state import GraphState
 from langgraph.runtime import Runtime
 from agents.daily_logs_agent.state import Context
