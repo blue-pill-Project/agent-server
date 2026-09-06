@@ -1,16 +1,22 @@
 import json
 from pathlib import Path
 from collections.abc import AsyncIterator, Callable
-from pprint import pprint
 from typing import Any, Iterator
+from uuid import uuid4
+
 import pytest
 import pytest_asyncio
 from langchain_openai import OpenAIEmbeddings
 from langgraph.store.postgres.aio import AsyncPostgresStore
+
 from agents.character_chat_agent.state import Context
 from common.config import settings
 from common.utils.datetime import get_current_date, get_now
-from tests.agents.character_chat_agent.cases import CHAT_CASES, CharacterChatCase
+from common.utils.reranker import BgeReranker
+from tests.agents.character_chat_agent.cases import (
+    CHARACTER_PROMPT_CASES,
+    CharacterPromptCase,
+)
 
 
 def get_report_timestamp() -> str:
@@ -38,16 +44,21 @@ async def memory_store() -> AsyncIterator[AsyncPostgresStore]:
 
 
 @pytest.fixture
-def context_factory() -> Callable[[CharacterChatCase], Context]:
-    def create_context(case: CharacterChatCase) -> Context:
+def context_factory() -> Callable[[CharacterPromptCase], Context]:
+    def create_context(character: CharacterPromptCase) -> Context:
+        # 테스트 실행마다 새로운 로그방을 사용해서
+        # 이전 테스트의 장기기억과 격리한다.
+        test_log_room_id = str(uuid4().int % 2_000_000_000)
+
         return Context(
             user_id="1",
-            log_room_id="1",
+            log_room_id=test_log_room_id,
             log_room_member_id="2",
             current_date=get_current_date(),
             now=get_now().date(),
-            log_room_member_prompt=case.prompt,
-            log_room_relationships=case.relationship,
+            log_room_member_prompt=character.prompt,
+            log_room_relationships=character.relationship,
+            reranker=BgeReranker(),
         )
 
     return create_context
@@ -55,12 +66,16 @@ def context_factory() -> Callable[[CharacterChatCase], Context]:
 
 @pytest.fixture
 def default_context(
-    context_factory: Callable[[CharacterChatCase], Context],
+    context_factory: Callable[[CharacterPromptCase], Context],
 ) -> Context:
-    return context_factory(CHAT_CASES[0])
+    return context_factory(CHARACTER_PROMPT_CASES[0])
 
 
-# =================================================#
+# ============================================================
+# CHARACTER CHAT REPORT
+# ============================================================
+
+
 @pytest.fixture(scope="session")
 def character_chat_report() -> Iterator[list[dict[str, Any]]]:
     results: list[dict[str, Any]] = []
@@ -70,22 +85,48 @@ def character_chat_report() -> Iterator[list[dict[str, Any]]]:
     print("\n\n//========== 🧪 CHARACTER CHAT TEST REPORT ==========//")
 
     for result in results:
-        print(f"\n[{result['status'].upper()}] {result['case_id']}")
+        print(
+            f"\n"
+            f"[{result['status'].upper()}] "
+            f"{result['character_id']} / {result['name']}"
+        )
+
+        print(f"relationship : {result['relationship']}")
 
         if result["status"] == "failed":
-            print(f"error    : {result.get('error')}")
+            print(f"error        : {result.get('error')}")
             continue
 
-        # TODO: 결과 프린팅 추가해야함...
+        for conversation in result["conversation"]:
+            print(f"\n--- TURN {conversation['turn']} ---")
+
+            print(f"USER      : {conversation['user']}")
+
+            print(f"CHARACTER : {conversation['reply']}")
+
+            memories = conversation.get("long_term_memories")
+
+            if memories:
+                print(f"MEMORIES  : {memories}")
 
     timestamp = get_report_timestamp()
+
     output_path = Path(
         f"tests/agents/character_chat_agent/results/character_chat_{timestamp}.json"
     )
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    output_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     output_path.write_text(
-        json.dumps(results, ensure_ascii=False, indent=2, default=str),
+        json.dumps(
+            results,
+            ensure_ascii=False,
+            indent=2,
+            default=str,
+        ),
         encoding="utf-8",
     )
 

@@ -38,6 +38,11 @@ class CharacterChatAgent(BaseAgent):
         log_room_relationships = (
             await self._log_room_member_repository.get_relationship(log_room_id)
         )
+        example_dialogues = (
+            await self._log_room_member_repository.get_example_dialogues(
+                log_room_member_id
+            )
+        )
 
         context = Context(
             user_id=user_id,
@@ -47,6 +52,7 @@ class CharacterChatAgent(BaseAgent):
             now=now,
             log_room_member_prompt=log_room_member_prompt,
             log_room_relationships=log_room_relationships,
+            example_dialogues=example_dialogues,
             reranker=self._reranker,
         )
 
