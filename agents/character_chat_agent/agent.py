@@ -31,9 +31,7 @@ class CharacterChatAgent(BaseAgent):
     ):
         current_date = get_current_date()
         now = get_now()
-        thread_id = (
-            f"room_{log_room_id}:character_{log_room_member_id}:user_{user_id}:test"
-        )
+        thread_id = f"room_{log_room_id}:character_{log_room_member_id}:user_{user_id}"
         log_room_member_info = await self._log_room_member_repository.get_info(
             log_room_member_id
         )
